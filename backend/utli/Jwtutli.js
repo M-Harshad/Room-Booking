@@ -3,6 +3,7 @@ const { JWT_SECRET, REFRESH_TOKEN_SECRET } = process.env;
 
 // Generate an Access Token (short-lived)
 const generateAccessToken = (user) => {
+  console.log(user)
   return jwt.sign(
     { id: user._id, email: user.email, role: user.role },
     JWT_SECRET,

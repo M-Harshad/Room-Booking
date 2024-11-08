@@ -116,7 +116,6 @@ router.post('/register', async (req, res) => {
     maxAge: 7 * 24 * 60 * 60 * 1000,  // Refresh Token is valid for 7 days
   });
   
-  console.log(newAccessToken)
 
   res.json({ accessToken: newAccessToken,});  // Send the new Access Token
 });
