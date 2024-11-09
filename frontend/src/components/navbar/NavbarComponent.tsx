@@ -1,10 +1,14 @@
 import { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink, } from 'react-router-dom';
 import { Outlet } from 'react-router-dom';
+import { RootState } from '../../redux/store';
+import { useSelector, } from 'react-redux';
+import Menuitems from '../common/navbar/Menuitems';
 
 const Navbar = () => {
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   const sidebarRef = useRef(null);
+  const IsLoggedIn = useSelector((state: RootState) => state.isloggedin.value);
 
   // Toggle the mobile menu
   const toggleMobileMenu = () => {
@@ -40,22 +44,29 @@ const Navbar = () => {
         <div className="flex justify-between items-center container mx-auto">
           {/* Logo Section */}
           <div className="text-2xl font-semibold text-dark-white">
-            <Link to="/">RoomBooking</Link>
+            <NavLink to="/">RoomBooking</NavLink>
           </div>
 
           {/* Menu Items */}
           <div className="hidden large:flex space-x-8">
-            <Link to="/" className="text-dark-white hover:text-[#D528A7] font-bold">Home</Link>
-            <Link to="/rooms" className="text-dark-white hover:text-[#D528A7] font-bold">Rooms</Link>
-            <Link to="/about" className="text-dark-white hover:text-[#D528A7] font-bold">About Us</Link>
-            <Link to="/contact" className="text-dark-white hover:text-[#D528A7] font-bold">Contact</Link>
-            
-            <Link
+          <Menuitems />
+
+            {IsLoggedIn ? (
+              <NavLink
+              to="/profile"
+              className="bg-purple-pink-gradient text-white p-2 rounded-xl hover:bg-blue-700"
+            >
+              profile
+            </NavLink>
+            ) : (
+              <NavLink
               to="/login"
               className="bg-purple-pink-gradient text-white p-2 rounded-xl hover:bg-blue-700"
             >
-              Login
-            </Link>
+              login
+            </NavLink>
+            )}
+            
           </div>
 
           {/* Mobile Menu (Hamburger Icon) */}
@@ -92,7 +103,7 @@ const Navbar = () => {
           >
             <div className="flex justify-between items-center">
               <div className="text-2xl font-semibold text-dark-white">
-                <Link to="/">RoomBooking</Link>
+                <NavLink to="/">RoomBooking</NavLink>
               </div>
               <button
                 className="text-dark-white focus:outline-none"
@@ -115,21 +126,26 @@ const Navbar = () => {
               </button>
             </div>
 
-            {/* Mobile Menu Links */}
+            {/* Mobile Menu NavLinks */}
             <div className="space-y-4 flex flex-col relative">
-              <Link to="/" className="text-dark-white hover:text-[#D528A7] font-bold" onClick={closeMobileMenu}>Home</Link>
-              <Link to="/rooms" className="text-dark-white hover:text-[#D528A7] font-bold" onClick={closeMobileMenu}>Rooms</Link>
-              <Link to="/about" className="text-dark-white hover:text-[#D528A7] font-bold" onClick={closeMobileMenu}>About Us</Link>
-              <Link to="/contact" className="text-dark-white hover:text-[#D528A7] font-bold" onClick={closeMobileMenu}>Contact</Link>
+            <Menuitems />
             </div>
             <div className='fixed bottom-10'>
-              <Link
-                to="/login"
-                className="bg-purple-pink-gradient text-white p-2 rounded-xl hover:bg-blue-700"
-                onClick={closeMobileMenu}
-              >
-                Login
-              </Link>
+            {IsLoggedIn ? (
+              <NavLink
+              to="/profile"
+              className="bg-purple-pink-gradient text-white p-2 rounded-xl hover:bg-blue-700"
+            >
+              profile
+            </NavLink>
+            ) : (
+              <NavLink
+              to="/login"
+              className="bg-purple-pink-gradient text-white p-2 rounded-xl hover:bg-blue-700"
+            >
+              login
+            </NavLink>
+            )}
             </div>
           </div>
         </div>

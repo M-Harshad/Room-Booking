@@ -1,8 +1,11 @@
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
+import { useDispatch } from 'react-redux'
+import { setIsLoggedIn } from '../../redux/slice/login/Loginslice';
 
 const LoginComponent = () => {
+  const dispatch = useDispatch()
   // Formik hook
   const formik = useFormik({
     initialValues: {
@@ -17,8 +20,9 @@ const LoginComponent = () => {
         .required('Password is required')
         .min(6, 'Password must be at least 6 characters'),
     }),
-    onSubmit: (values) => {
-      // Handle form submission
+    onSubmit: (values, { resetForm }) => {
+      resetForm();
+      dispatch(setIsLoggedIn())
       console.log(values);
     }
   });
@@ -74,11 +78,11 @@ const LoginComponent = () => {
           </div>
         </form>
 
-        {/* Don't have an account? Sign up link */}
+        {/* Don't have an account? Sign up NavLink */}
         <div className="mt-4 text-center">
           <p className="text-gray-400 text-sm">
             Don't have an account?{' '}
-            <Link to="/register" className="text-dark-white hover:text-[#D528A7] font-bold">Sign up</Link>
+            <NavLink to="/register" className="text-dark-white hover:text-[#D528A7] font-bold">Sign up</NavLink>
           </p>
         </div>
       </div>

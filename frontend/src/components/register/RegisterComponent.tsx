@@ -1,8 +1,13 @@
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
+import { useDispatch } from 'react-redux'
+import { setIsLoggedIn } from '../../redux/slice/login/Loginslice';
+import { useNavigate } from 'react-router-dom';
 
-const RegistrationComponent = () => {
+const RegistrationComponent = ({register}) => {
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
   // Formik hook
   const formik = useFormik({
     initialValues: {
@@ -21,9 +26,15 @@ const RegistrationComponent = () => {
         .required('Password is required')
         .min(6, 'Password must be at least 6 characters'),
     }),
-    onSubmit: (values, { resetForm }) => {
-      resetForm();
-      console.log(values);
+    onSubmit: async (values, { resetForm }) => {
+      try {
+        await register(values);
+        dispatch(setIsLoggedIn());
+        resetForm();
+        navigate("/");
+      } catch (error) {
+        console.error('Registration failed:', error);
+      }
     }
   });
 
@@ -94,11 +105,11 @@ const RegistrationComponent = () => {
             </button>
           </div>
         </form>
-        {/* Don't have an account? Sign up link */}
+        {/* Don't have an account? Sign up NavLink */}
         <div className="mt-4 text-center">
           <p className="text-gray-400 text-sm">
             Already have an account?{' '}
-            <Link to="/login" className="text-dark-white hover:text-[#D528A7] font-bold">Login</Link>
+            <NavLink to="/login" className="text-dark-white hover:text-[#D528A7] font-bold">Login</NavLink>
           </p>  
         </div>
       </div>
