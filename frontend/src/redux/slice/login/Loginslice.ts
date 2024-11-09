@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 
+
 export interface LoginSlice {
   value: boolean
 }
@@ -15,11 +16,18 @@ export const LoginSlice = createSlice({
   reducers: {
     setIsLoggedIn: (state) => {
       state.value = true
+      localStorage.setItem('isloggedin', 'true') // Persist to localStorage
+    },
+    setIsLoggedOut: (state) => {
+      state.value = false
+      localStorage.setItem('isloggedin', 'false') // Persist to localStorage
     },
    
   },
 })
 
-export const { setIsLoggedIn } = LoginSlice.actions
+
+
+export const { setIsLoggedIn, setIsLoggedOut } = LoginSlice.actions
 
 export default LoginSlice.reducer

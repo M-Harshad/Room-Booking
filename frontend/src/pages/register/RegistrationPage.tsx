@@ -11,9 +11,11 @@ const register = async (userinfo: any) => {
       // Store response data in local storage
       localStorage.setItem('userData', JSON.stringify(response.data));
       console.log('Response:', response.data);
+      return response
     }
   } catch (error) {
     console.error('Error:', error);
+    return error
   }
 };
 

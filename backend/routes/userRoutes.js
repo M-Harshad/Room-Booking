@@ -41,9 +41,9 @@ router.post('/register', async (req, res) => {
       });
   
       // Return response with success message and token
-      res.status(201).json({
+      res.status(200).json({
         message: 'User registered successfully',
-        AcessToken: AccessToken,
+        AccessToken: AccessToken,
       });
     } catch (error) {
       console.log({error})
@@ -56,11 +56,11 @@ router.post('/register', async (req, res) => {
   });
 
   router.post('/login', async (req, res) => {
-    const { email, password } = req.body;
+    const { username, password } = req.body;
   
     try {
       // Check if the user exists in the database
-      const user = await User.findOne({ email });
+      const user = await User.findOne({ username });
       if (!user) {
         return res.status(400).json({ message: 'Invalid email or password' });
       }

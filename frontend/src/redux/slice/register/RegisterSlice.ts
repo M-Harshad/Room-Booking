@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
+
 interface DataState {
   data: any[]; // Use appropriate types based on your data structure
 
@@ -23,6 +24,8 @@ const dataSlice = createSlice({
 
   },
 });
+
+
 
 export const { setData, clearData } = dataSlice.actions;
 

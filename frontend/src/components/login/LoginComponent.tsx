@@ -1,11 +1,18 @@
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { NavLink } from 'react-router-dom';
-import { useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux';
 import { setIsLoggedIn } from '../../redux/slice/login/Loginslice';
+import { useNavigate } from 'react-router-dom';
+import { useState } from 'react'; // Import useState
 
-const LoginComponent = () => {
-  const dispatch = useDispatch()
+const LoginComponent = ({ login }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  
+  // State for handling error messages
+  const [errorMessage, setErrorMessage] = useState('');
+
   // Formik hook
   const formik = useFormik({
     initialValues: {
@@ -20,10 +27,26 @@ const LoginComponent = () => {
         .required('Password is required')
         .min(6, 'Password must be at least 6 characters'),
     }),
-    onSubmit: (values, { resetForm }) => {
-      resetForm();
-      dispatch(setIsLoggedIn())
-      console.log(values);
+    onSubmit: async (values, { resetForm }) => {
+      try {
+        // Sending login request to the backend
+        const response = await login(values);
+        if (response.status === 200 && response.data) {
+
+          dispatch(setIsLoggedIn());
+          localStorage.setItem('isloggedin', 'true');  // Store login status as a string
+          resetForm();
+          navigate("/");
+          
+        } else {
+          // Handle failed login attempt
+          setErrorMessage(response.data.message || 'Unknown error');
+        }
+      } catch (error) {
+        // Set error message in case of an error (e.g., network issues)
+        setErrorMessage('Invalid email or password');
+        console.error('Login failed:', error);
+      }
     }
   });
 
@@ -71,12 +94,19 @@ const LoginComponent = () => {
           <div className="mt-6">
             <button
               type="submit"
-              className="w-full min-w-[280px] large:w-[700px] medium:w-[500px] p-3 bg-purple-pink-gradient  rounded-xl text-dark-white focus:bg-pink-purple-gradient focus:outline-none"
+              className="w-full min-w-[280px] large:w-[700px] medium:w-[500px] p-3 bg-purple-pink-gradient rounded-xl text-dark-white focus:bg-pink-purple-gradient focus:outline-none"
             >
               Login
             </button>
           </div>
         </form>
+
+        {/* Display error message if login fails */}
+        {errorMessage && (
+          <div className="mt-4 text-red-500 text-sm text-center">
+            {errorMessage}
+          </div>
+        )}
 
         {/* Don't have an account? Sign up NavLink */}
         <div className="mt-4 text-center">

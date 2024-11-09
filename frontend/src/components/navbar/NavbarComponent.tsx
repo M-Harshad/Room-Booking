@@ -2,8 +2,9 @@ import { useState, useEffect, useRef } from 'react';
 import { NavLink, } from 'react-router-dom';
 import { Outlet } from 'react-router-dom';
 import { RootState } from '../../redux/store';
-import { useSelector, } from 'react-redux';
-import Menuitems from '../common/navbar/Menuitems';
+import { useSelector } from 'react-redux';
+import Menuitems from '../common/navbar/MenuItems';
+
 
 const Navbar = () => {
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);

@@ -1,13 +1,18 @@
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { NavLink } from 'react-router-dom';
-import { useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux';
 import { setIsLoggedIn } from '../../redux/slice/login/Loginslice';
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react'; // Import useState for error message state
 
-const RegistrationComponent = ({register}) => {
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
+const RegistrationComponent = ({ register }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  // State to handle error messages from the backend
+  const [errorMessage, setErrorMessage] = useState('');
+
   // Formik hook
   const formik = useFormik({
     initialValues: {
@@ -28,14 +33,23 @@ const RegistrationComponent = ({register}) => {
     }),
     onSubmit: async (values, { resetForm }) => {
       try {
-        await register(values);
-        dispatch(setIsLoggedIn());
-        resetForm();
-        navigate("/");
+        const response = await register(values);
+    
+        // Check if AccessToken is returned in the response
+        if (response && response.status === 200) {
+          dispatch(setIsLoggedIn());
+          localStorage.setItem('isloggedin', 'true'); // Store login status as a string
+          resetForm();
+          navigate("/"); 
+        } else {
+          // Handle errors if no AccessToken or message exists
+          setErrorMessage(response?.message || 'Unknown error occurred during registration');
+        }
       } catch (error) {
-        console.error('Registration failed:', error);
+        console.error('Registration failed:', error); // Log the error for debugging
+        setErrorMessage('Registration failed. Please try again.');
       }
-    }
+    },
   });
 
   return (
@@ -105,7 +119,15 @@ const RegistrationComponent = ({register}) => {
             </button>
           </div>
         </form>
-        {/* Don't have an account? Sign up NavLink */}
+
+        {/* Display error message from backend */}
+        {errorMessage && (
+          <div className="mt-4 text-red-500 text-sm text-center">
+            {errorMessage}
+          </div>
+        )}
+
+        {/* Already have an account? Login NavLink */}
         <div className="mt-4 text-center">
           <p className="text-gray-400 text-sm">
             Already have an account?{' '}
