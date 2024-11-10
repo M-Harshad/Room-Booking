@@ -44,6 +44,8 @@ router.post('/register', async (req, res) => {
       res.status(200).json({
         message: 'User registered successfully',
         AccessToken: AccessToken,
+        RefreshToken: RefreshToken,
+        userId: newUser._id
       });
     } catch (error) {
       console.log({error})
@@ -74,17 +76,20 @@ router.post('/register', async (req, res) => {
       const AccessToken = generateAccessToken(req.body)
       const RefreshToken = generateRefreshToken(req.body)
 
-       // Store the refresh token in an HTTP-only cookie
-        res.cookie('refreshToken', RefreshToken, {
-          httpOnly: true,
-          secure: process.env.NODE_ENV === 'production', 
-          maxAge: 7 * 24 * 60 * 60 * 1000,  // Refresh Token is valid for 7 days
-        });
+      //  // Store the refresh token in an HTTP-only cookie
+      //   res.cookie('refreshToken', RefreshToken, {
+      //     httpOnly: true,
+      //     // secure: process.env.NODE_ENV === 'production', 
+      //     secure: false, 
+      //     maxAge: 7 * 24 * 60 * 60 * 1000,  // Refresh Token is valid for 7 days
+      //   });
   
       // Send response with the token
       res.status(200).json({
         message: 'Login successful',
-        AcessToken: AccessToken,
+        AccessToken: AccessToken,
+        RefreshToken: RefreshToken,
+        userId: user._id
       });
   
     } catch (error) {
@@ -93,9 +98,9 @@ router.post('/register', async (req, res) => {
   });
 
   router.post('/user/refresh-token', (req, res) => {
-    console.log(req.headers.cookie)
-    const  refreshTokenastring = req.headers.cookie;
-    const refreshToken = refreshTokenastring.split("=")[1]
+
+    const refreshToken = req.headers['authorization']?.split(' ')[1];
+
 
   if (!refreshToken) return res.status(401).send('Refresh Token is missing');
 
@@ -109,15 +114,15 @@ router.post('/register', async (req, res) => {
   const newAccessToken = generateAccessToken(user);
   const newRefreshToken = generateRefreshToken(user);
 
-   // Store the refresh token in an HTTP-only cookie
-   res.cookie('refreshToken', newRefreshToken, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production', 
-    maxAge: 7 * 24 * 60 * 60 * 1000,  // Refresh Token is valid for 7 days
-  });
+  //  // Store the refresh token in an HTTP-only cookie
+  //  res.cookie('refreshToken', newRefreshToken, {
+  //   httpOnly: true,
+  //   secure: process.env.NODE_ENV === 'production', 
+  //   maxAge: 7 * 24 * 60 * 60 * 1000,  // Refresh Token is valid for 7 days
+  // });
   
 
-  res.json({ accessToken: newAccessToken,});  // Send the new Access Token
+  res.json({ AccessToken: newAccessToken, RefreshToken: newRefreshToken });  // Send the new Access Token
 });
 
 

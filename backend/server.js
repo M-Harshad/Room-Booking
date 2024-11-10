@@ -1,11 +1,21 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const cookieParser = require("cookie-parser");
 const cors = require("cors");
 
 const app = express();
 const port = 3000
 
-app.use(cors());
+
+app.use(cookieParser());
+
+// CORS setup with credentials allowed
+app.use(cors({
+  origin: 'http://localhost:5173', // The frontend's URL
+  credentials: true, // Allow cookies and other credentials
+}));
+
+
 app.use(express.json());
 
  app.use("/api", require("./routes/userRoutes"));
