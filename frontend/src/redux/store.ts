@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit'
 import isloggedin from './slice/login/Loginslice'
+import rooms from './slice/rooms/RoomSlice'
 
 export const store = configureStore({
   reducer: {
     isloggedin: isloggedin,
+    GetRoomsList: rooms,
   },
 })
 

@@ -6,6 +6,8 @@ import HomePage from "./pages/home/HomePage";
 import { useDispatch } from 'react-redux'
 import { setIsLoggedIn, setIsLoggedOut } from "./redux/slice/login/Loginslice";
 import { useEffect } from "react";
+import AddRoomPage from "./pages/admin/AddRooms/AddRoomPage";
+import RoomsPage from "./pages/rooms/RoomsPage";
 
 function App() {
 
@@ -39,6 +41,14 @@ function App() {
     {
       path: "/login",
       element: <LoginPage/>
+    },
+    {
+      path: "/admin/addroom",
+      element: <AddRoomPage/>
+    },
+    {
+      path: "/rooms",
+      element: <RoomsPage/>
     },
 
   ]);

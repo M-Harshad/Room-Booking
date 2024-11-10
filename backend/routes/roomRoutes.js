@@ -28,7 +28,7 @@ router.get('/rooms', async (req, res) => {
 }    
 });
 
-router.post('/rooms', authenticateToken, async (req, res) => {
+router.post('/rooms/add', authenticateToken, async (req, res) => {
     const { roomName, capacity, pricePerHour, availability } = req.body;
     
     // Validate input

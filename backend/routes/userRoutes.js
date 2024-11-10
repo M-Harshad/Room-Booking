@@ -73,8 +73,8 @@ router.post('/register', async (req, res) => {
       }
   
       // Generate JWT token
-      const AccessToken = generateAccessToken(req.body)
-      const RefreshToken = generateRefreshToken(req.body)
+      const AccessToken = generateAccessToken(user)
+      const RefreshToken = generateRefreshToken(user)
 
       //  // Store the refresh token in an HTTP-only cookie
       //   res.cookie('refreshToken', RefreshToken, {

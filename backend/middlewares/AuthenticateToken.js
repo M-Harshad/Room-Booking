@@ -2,7 +2,8 @@ const { verifyAccessToken } = require('../utli/Jwtutli');  // Import your JWT ut
 
 const authenticateToken = (req, res, next) => {
   // Get the token from the Authorization header
-  const token = req.headers.authorization && req.headers.authorization.split(" ")[1];
+  const token = req.headers['authorization']?.split(' ')[1];
+  console.log(token)
 
 
   // If token doesn't exist, return an error
@@ -11,6 +12,7 @@ const authenticateToken = (req, res, next) => {
   }
 
   const decoded = verifyAccessToken(token);
+  console.log(decoded)
 
   // If the token is invalid or expired
   if (!decoded) {

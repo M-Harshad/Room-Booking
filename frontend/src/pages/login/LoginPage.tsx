@@ -4,10 +4,10 @@ import { setupAutoRefresh } from "../../RefreshToken/RefreshToken";
 
 
 // Handle form submission
-const login = async (userinfo: any, credentials) => {
+const login = async (userinfo: any,) => {
   try {
-    const loginData = { ...userinfo, ...credentials };
-    const response = await axios.post('http://localhost:3000/api/login', loginData);
+    
+    const response = await axios.post('http://localhost:3000/api/login', userinfo,);
     console.log(response)
 
     if (response && response.data) {
