@@ -31,7 +31,15 @@ function App() {
       children: [{
         path: "/",
         element: <HomePage/>,
-      }
+      },
+      {
+        path: "/rooms",
+        element: <RoomsPage/>
+      },
+      {
+        path: "/admin/addroom",
+        element: <AddRoomPage/>
+      },
     ]
     },
     {
@@ -42,15 +50,7 @@ function App() {
       path: "/login",
       element: <LoginPage/>
     },
-    {
-      path: "/admin/addroom",
-      element: <AddRoomPage/>
-    },
-    {
-      path: "/rooms",
-      element: <RoomsPage/>
-    },
-
+    
   ]);
 
   return (

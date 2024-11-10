@@ -9,7 +9,6 @@ const getroom = async (dispatch: any) => {
 
       if (response && response.data) {
         dispatch(setRooms(response.data.rooms));
-        console.log(response.data.rooms)
 
       } else {
         dispatch(setErrorMessage('Failed to fetch rooms.'));

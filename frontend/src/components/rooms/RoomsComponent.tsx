@@ -16,6 +16,8 @@ const RoomsComponent = ({GetRooms}) => {
     GetRooms(dispatch)
   }, [dispatch]);
 
+ 
+
   return (
     <div className="min-h-screen flex justify-center items-center bg-dark-background">
       <div className="w-full flex items-center justify-center flex-col p-6 bg-dark-background large:p-20 medium:p-10">
@@ -42,8 +44,8 @@ const RoomsComponent = ({GetRooms}) => {
                     <h3 className="text-lg font-semibold text-dark-white">{room.roomName}</h3>
                     <p className="text-sm text-dark-white">Capacity: {room.capacity}</p>
                     <p className="text-sm text-dark-white">Price: ${room.pricePerHour}/hr</p>
-                    <p className={`text-sm ${room.availability ? 'text-green-500' : 'text-red-500'}`}>
-                      {room.availability ? 'Available' : 'Not Available'}
+                    <p className={`text-sm ${room.Availibility ? 'text-green-500' : 'text-red-500'}`}>
+                      {room.Availibility ? 'Available' : 'Not Available'}
                     </p>
                   </div>
                   <button
