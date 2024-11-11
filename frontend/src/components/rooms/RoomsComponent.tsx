@@ -49,7 +49,7 @@ const RoomsComponent = ({GetRooms}) => {
                     </p>
                   </div>
                   <button
-                    onClick={() => navigate(`/rooms/${room._id}`)}
+                    onClick={() => navigate(`/admin/rooms/update/${room._id}`)}
                     className="bg-purple-pink-gradient p-2 rounded-xl text-dark-white focus:outline-none"
                   >
                     View Details

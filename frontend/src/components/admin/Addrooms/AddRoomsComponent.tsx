@@ -44,6 +44,7 @@ const AddRoomComponent = () => {
         setErrorMessage('Failed to add room. Please try again.');
       }
       resetForm();
+      console.log(formik)
     },
   });
 

@@ -8,6 +8,9 @@ import { setIsLoggedIn, setIsLoggedOut } from "./redux/slice/login/Loginslice";
 import { useEffect } from "react";
 import AddRoomPage from "./pages/admin/AddRooms/AddRoomPage";
 import RoomsPage from "./pages/rooms/RoomsPage";
+import ProtectedRoute from "./Protection/ProtectedRoute"
+import { setupAutoRefresh } from "./RefreshToken/RefreshToken";
+import UpdateRoomsPage from "./pages/admin/updateroom/UpdateRoomPage";
 
 function App() {
 
@@ -21,6 +24,10 @@ function App() {
     } else {
       dispatch(setIsLoggedOut())  // User is not logged in, set Redux state to false
     }
+
+    const token = localStorage.getItem("AccessToken");
+
+    setupAutoRefresh(token)
   }, [dispatch])
 
 
@@ -38,8 +45,19 @@ function App() {
       },
       {
         path: "/admin/addroom",
-        element: <AddRoomPage/>
+       element: (<ProtectedRoute>
+                    <AddRoomPage/>
+                 </ProtectedRoute>
+       ),
       },
+      {
+        path: "/admin/rooms/update/:Roomid",
+       element: (<ProtectedRoute>
+                    <UpdateRoomsPage/>
+                 </ProtectedRoute>
+       ),
+    },
+      
     ]
     },
     {
@@ -50,6 +68,7 @@ function App() {
       path: "/login",
       element: <LoginPage/>
     },
+  
     
   ]);
 

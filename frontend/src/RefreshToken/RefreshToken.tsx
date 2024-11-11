@@ -8,7 +8,7 @@ export const setupAutoRefresh = (token) => {
   const { exp } = JSON.parse(atob(token.split('.')[1])); // Decode JWT to get expiration
 
   // Calculate remaining time in milliseconds, subtracting a 5-minute buffer (300,000 ms)
-  const refreshTime = exp * 1000 - Date.now();
+  const refreshTime = exp * 1000 - Date.now() - 30000;
   console.log(`${refreshTime} this is time`)
 
   // Clear any existing timeout to prevent duplicates
@@ -43,6 +43,7 @@ export const refreshToken = async () => {
       localStorage.setItem('AccessToken', newAccessToken);
       localStorage.setItem('RefreshToken', newRefreshToken);
       setupAutoRefresh(newAccessToken);
+      console.log('working...')
   
     } catch (error) {
       console.error("Failed to refresh token:", error);

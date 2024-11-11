@@ -28,6 +28,31 @@ router.get('/rooms', async (req, res) => {
 }    
 });
 
+// Route to get room details by roomId
+router.get('/rooms/:id', authenticateToken, async (req, res) => {
+  const roomId = req.params.id;  // Get the roomId from the route parameter
+
+  try {
+    // Find the room by ID in the database
+    const room = await Room.findById(roomId);
+    
+    // If no room is found, return a 404 response
+    if (!room) {
+      return res.status(404).json({ message: 'Room not found' });
+    }
+
+    // Return the room details as a response
+    res.status(200).json(room);
+  } catch (error) {
+    // Handle any errors that occur during the database query
+    console.error(error);
+    res.status(500).json({
+      message: 'Error fetching room details',
+      error: error.message,
+    });
+  }
+});
+
 router.post('/rooms/add', authenticateToken, async (req, res) => {
     const { roomName, capacity, pricePerHour, availability } = req.body;
     

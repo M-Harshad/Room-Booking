@@ -1,4 +1,4 @@
-import AddRoomComponent from "../../../components/Addrooms/AddRoomsComponent"
+import AddRoomComponent from "../../../components/admin/Addrooms/AddRoomsComponent"
 
 function AddRoomPage() {
   return (

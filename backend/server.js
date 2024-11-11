@@ -1,13 +1,12 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const cookieParser = require("cookie-parser");
+
 const cors = require("cors");
 
 const app = express();
 const port = 3000
 
 
-app.use(cookieParser());
 
 // CORS setup with credentials allowed
 app.use(cors({

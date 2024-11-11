@@ -9,7 +9,7 @@ import Menuitems from '../common/navbar/MenuItems';
 const Navbar = () => {
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   const sidebarRef = useRef(null);
-  const IsLoggedIn = useSelector((state: RootState) => state.isloggedin.value);
+  const IsLoggedIn = useSelector((state) => state.isloggedin.value);
 
   // Toggle the mobile menu
   const toggleMobileMenu = () => {
@@ -41,7 +41,8 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className="bg-dark-background p-6">
+      {/* Fixed Navbar */}
+      <nav className="bg-dark-background p-6 fixed top-0 left-0 w-full z-50">
         <div className="flex justify-between items-center container mx-auto">
           {/* Logo Section */}
           <div className="text-2xl font-semibold text-dark-white">
@@ -50,24 +51,23 @@ const Navbar = () => {
 
           {/* Menu Items */}
           <div className="hidden large:flex space-x-8">
-          <Menuitems />
+            <Menuitems />
 
             {IsLoggedIn ? (
               <NavLink
-              to="/profile"
-              className="bg-purple-pink-gradient text-white p-2 rounded-xl hover:bg-blue-700"
-            >
-              profile
-            </NavLink>
+                to="/profile"
+                className="bg-purple-pink-gradient text-white p-2 rounded-xl hover:bg-blue-700"
+              >
+                profile
+              </NavLink>
             ) : (
               <NavLink
-              to="/login"
-              className="bg-purple-pink-gradient text-white p-2 rounded-xl hover:bg-blue-700"
-            >
-              login
-            </NavLink>
+                to="/login"
+                className="bg-purple-pink-gradient text-white p-2 rounded-xl hover:bg-blue-700"
+              >
+                login
+              </NavLink>
             )}
-            
           </div>
 
           {/* Mobile Menu (Hamburger Icon) */}
@@ -129,33 +129,37 @@ const Navbar = () => {
 
             {/* Mobile Menu NavLinks */}
             <div className="space-y-4 flex flex-col relative">
-            <Menuitems />
+              <Menuitems />
             </div>
-            <div className='fixed bottom-10'>
-            {IsLoggedIn ? (
-              <NavLink
-              to="/profile"
-              className="bg-purple-pink-gradient text-white p-2 rounded-xl hover:bg-blue-700"
-            >
-              profile
-            </NavLink>
-            ) : (
-              <NavLink
-              to="/login"
-              className="bg-purple-pink-gradient text-white p-2 rounded-xl hover:bg-blue-700"
-            >
-              login
-            </NavLink>
-            )}
+            <div className="fixed bottom-10">
+              {IsLoggedIn ? (
+                <NavLink
+                  to="/profile"
+                  className="bg-purple-pink-gradient text-white p-2 rounded-xl hover:bg-blue-700"
+                >
+                  profile
+                </NavLink>
+              ) : (
+                <NavLink
+                  to="/login"
+                  className="bg-purple-pink-gradient text-white p-2 rounded-xl hover:bg-blue-700"
+                >
+                  login
+                </NavLink>
+              )}
             </div>
           </div>
         </div>
       )}
 
-      {/* Outlet for nested routes */}
-      <Outlet />
+      {/* Content Below Navbar */}
+      <div>
+        {/* Adjust the padding-top to the height of the navbar */}
+        <Outlet />
+      </div>
     </>
   );
 };
 
 export default Navbar;
+
