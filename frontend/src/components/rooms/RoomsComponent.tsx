@@ -4,19 +4,54 @@ import { useNavigate } from 'react-router-dom';
 import { Dispatch } from '@reduxjs/toolkit';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
+import {jwtDecode} from 'jwt-decode';  // Import jwt-decode to decode the token
 
-const RoomsComponent = ({GetRooms}) => {
-  const dispatch = useDispatch()
+const RoomsComponent = ({ GetRooms }) => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const rooms = useSelector((state: RootState) => state.GetRoomsList.rooms);
   const errorMessage = useSelector((state: RootState) => state.GetRoomsList.errorMessage);
 
+  // Decode the JWT token from localStorage to get the user role
+  const token = localStorage.getItem('AccessToken');
+  let userRole: string = 'user'; // Default to 'user'
+  if (token) {
+    try {
+      const decoded: any = jwtDecode(token);
+      console.log(decoded)
+      userRole = decoded.role; 
+      console.log(userRole)// Assuming the JWT contains a "role" property
+    } catch (error) {
+      console.error('Error decoding token:', error);
+    }
+  }
+
   // Fetch rooms data on component mount
   useEffect(() => {
-    GetRooms(dispatch)
+    GetRooms(dispatch);
   }, [dispatch]);
 
- 
+  // Handle room booking (for normal users)
+  const handleBookNow = (roomId: string) => {
+    navigate(`/booking/${roomId}`);
+  };
+
+  // Handle room deletion (for admins)
+  const handleDelete = (roomId: string) => {
+    // Implement delete functionality
+    // For example, call an API to delete the room
+    axios.delete(`http://localhost:3000/api/rooms/${roomId}`, {
+      headers: {
+        Authorization:`Bearer ${token}`,
+      }
+  })
+  
+  };
+
+  // Handle room update (for admins)
+  const handleUpdate = (roomId: string) => {
+    navigate(`/admin/rooms/update/${roomId}`);
+  };
 
   return (
     <div className="min-h-screen flex justify-center items-center bg-dark-background">
@@ -48,12 +83,36 @@ const RoomsComponent = ({GetRooms}) => {
                       {room.Availibility ? 'Available' : 'Not Available'}
                     </p>
                   </div>
-                  <button
-                    onClick={() => navigate(`/admin/rooms/update/${room._id}`)}
-                    className="bg-purple-pink-gradient p-2 rounded-xl text-dark-white focus:outline-none"
-                  >
-                    View Details
-                  </button>
+                  <div className="flex space-x-4">
+                    {userRole === 'admin' ? (
+                      <>
+                        <button
+                          onClick={() => handleUpdate(room._id)}
+                          className="bg-purple-pink-gradient p-2 rounded-xl text-dark-white focus:outline-none"
+                        >
+                          Update
+                        </button>
+                        <button
+                          onClick={() => handleDelete(room._id)}
+                          className="bg-red-500 p-2 rounded-xl text-dark-white focus:outline-none"
+                        >
+                          Delete
+                        </button>
+                      </>
+                    ) : (
+                      <button
+                        onClick={() => handleBookNow(room._id)}
+                        disabled={!room.Availibility}
+                        className={`${
+                          room.Availibility
+                            ? 'bg-purple-pink-gradient'
+                            : 'bg-gray-400 cursor-not-allowed'
+                        } p-2 rounded-xl text-dark-white focus:outline-none`}
+                      >
+                        Book Now
+                      </button>
+                    )}
+                  </div>
                 </li>
               ))}
             </ul>
@@ -67,3 +126,4 @@ const RoomsComponent = ({GetRooms}) => {
 };
 
 export default RoomsComponent;
+

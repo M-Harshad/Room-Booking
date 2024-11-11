@@ -3,11 +3,12 @@ import {jwtDecode} from 'jwt-decode';  // Ensure you import jwtDecode
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem("AccessToken");  // Retrieve the token from localStorage (or cookies/sessionStorage)
-  
+
   let isAdmin = false;
   if (token) {
     try {
       const decodedToken = jwtDecode(token);  // Decode the JWT to access its contents
+
       // Assuming the role is stored under "role" in the decoded token
       isAdmin = decodedToken.role === "admin";  
     } catch (error) {

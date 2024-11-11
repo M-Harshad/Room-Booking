@@ -13,20 +13,30 @@ const validationSchema = Yup.object({
   availability: Yup.boolean().required('Availability is required'),
 });
 
+interface Room {
+  roomName: string;
+  capacity: number;
+  pricePerHour: number;
+  availability: boolean;
+}
+
 const UpdateRoomComponent = () => {
-  const [roomDetails, setRoomDetails] = useState(null);
+  const [roomDetails, setRoomDetails] = useState<Room | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const { Roomid } = useParams(); // Get the room ID from the URL
-  const IsLoggedIn = useSelector((state) => state.isloggedin.value);
   const navigate = useNavigate();
-  console.log(Roomid)
+  const token = localStorage.getItem('AccessToken')
 
   // Fetch room details when the component mounts
   useEffect(() => {
     const fetchRoomDetails = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/api/rooms/${Roomid}`);
+        const response =  await axios.get(`http://localhost:3000/api/rooms/${Roomid}`, {
+          headers: {
+            Authorization:`Bearer ${token}`,
+          },
+        });
         setRoomDetails(response.data);
         setIsLoading(false);
       } catch (err) {
@@ -37,13 +47,15 @@ const UpdateRoomComponent = () => {
 
     fetchRoomDetails();
   }, [Roomid]);
+  console.log(roomDetails)
 
   // Handle form submission (Update Room)
   const handleSubmit = async (values) => {
+   
     try {
         await axios.put(`http://localhost:3000/api/rooms/${Roomid}`, values, {
             headers: {
-              Authorization:`Bearer ${localStorage.getItem('AccessToken')}`,
+              Authorization:`Bearer ${token}`,
             },
           });
           
