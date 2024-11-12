@@ -111,11 +111,11 @@ const AddRoomComponent = () => {
             <select
                 id="availability"
                 name="availability"
-                className="mt-1 p-3 w-full min-w-[280px] large:w-[700px] medium:w-[500px] border border-dark-light-border rounded-xl text-dark-white bg-dark-light focus:outline-none focus:border-[#B515DF]"
+                className="mt-1 p-3 w-full border border-dark-light-border rounded-xl text-dark-white bg-dark-light focus:outline-none focus:border-[#B515DF]"
                 onChange={formik.handleChange}
             >
-                <option value="true">True</option>
-                <option value="false">False</option>
+               <option value={true}>Available</option>
+               <option value={false}>Not Available</option>
             </select>
             {formik.touched.availability && formik.errors.availability && (
                 <p className="text-red-500 text-sm">{formik.errors.availability}</p>

@@ -3,49 +3,58 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Dispatch } from '@reduxjs/toolkit';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../redux/store';
+import { RootState } from '../../../redux/store';
 import {jwtDecode} from 'jwt-decode';  // Import jwt-decode to decode the token
 
-const RoomsComponent = ({ GetRooms }) => {
+const AdminRooms = ({ GetRooms }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const rooms = useSelector((state: RootState) => state.GetRoomsList.rooms);
   const errorMessage = useSelector((state: RootState) => state.GetRoomsList.errorMessage);
 
-  // Decode the JWT token from localStorage to get the user role
-  const token = localStorage.getItem('AccessToken');
-  let userRole: string = 'user'; // Default to 'user'
-  if (token) {
-    try {
-      const decoded: any = jwtDecode(token);
-      userRole = decoded.role; 
-    } catch (error) {
-      console.error('Error decoding token:', error);
-    }
-  }
+   // Decode the JWT token from localStorage to get the user role
+ const token = localStorage.getItem('AccessToken');
+ let userRole: string = 'user'; // Default to 'user'
+ if (token) {
+   try {
+     const decoded: any = jwtDecode(token);
+     userRole = decoded.role; 
+   } catch (error) {
+     console.error('Error decoding token:', error);
+   }
+ }
+
+
 
   // Fetch rooms data on component mount
   useEffect(() => {
     GetRooms(dispatch);
   }, [dispatch]);
 
-  // Handle room booking (for normal users)
-  const handleBookNow = (roomId: string) => {
-    navigate(`/booking/${roomId}`);
-  };
 
-  // Handle room deletion (for admins)
-  const handleDelete = (roomId: string) => {
-    // Implement delete functionality
-    // For example, call an API to delete the room
-    axios.delete(`http://localhost:3000/api/rooms/${roomId}`, {
-      headers: {
-        Authorization:`Bearer ${token}`,
-      }
-  })
+  const handleDelete = async (roomId: string) => {
+    try {
+      // Make the DELETE request
+      await axios.delete(`http://localhost:3000/api/rooms/${roomId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
   
+      // Optionally, refresh the room list after successful deletion
+      GetRooms(dispatch); // This assumes GetRooms is a function that fetches the room list
+  
+    } catch (err) {
+      console.error("Failed to delete room:", err);
+      // Optionally, handle the error (e.g., show a notification to the user)
+    }
   };
+  
 
+  // Handle room update (for admins)
+  const handleUpdate = (roomId: string) => {
+    navigate(`/rooms/update/${roomId}`);
+  };
 
   return (
     <div className="min-h-screen flex justify-center items-center bg-dark-background">
@@ -53,7 +62,7 @@ const RoomsComponent = ({ GetRooms }) => {
         <h2 className="text-2xl font-semibold text-center text-dark-white mb-10">
           List of Rooms
         </h2>
-      
+    
           
         {/* Room list */}
         {rooms.length > 0 ? (
@@ -70,21 +79,26 @@ const RoomsComponent = ({ GetRooms }) => {
                     <p className="text-sm text-dark-white">Price: ${room.pricePerHour}/hr</p>
                     <p className={`text-sm ${room.Availibility ? 'text-green-500' : 'text-red-500'}`}>
                       {room.Availibility ? 'Available' : 'Not Available'}
+                      {console.log(room)}
                     </p>
                   </div>
                   <div className="flex space-x-4">
                    
-                      <button
-                        onClick={() => handleBookNow(room._id)}
-                        disabled={!room.Availibility}
-                        className={`${
-                          room.Availibility
-                            ? 'bg-purple-pink-gradient'
-                            : 'bg-gray-400 cursor-not-allowed'
-                        } p-2 rounded-xl text-dark-white focus:outline-none`}
-                      >
-                        Book Now
-                      </button>
+                      <>
+                        <button
+                          onClick={() => handleUpdate(room._id)}
+                          className="bg-purple-pink-gradient p-2 rounded-xl text-dark-white focus:outline-none"
+                        >
+                          Update
+                        </button>
+                        <button
+                          onClick={() => handleDelete(room._id)}
+                          className="bg-red-500 p-2 rounded-xl text-dark-white focus:outline-none"
+                        >
+                          Delete
+                        </button>
+                      </>
+                    ) 
                   </div>
                 </li>
               ))}
@@ -98,5 +112,5 @@ const RoomsComponent = ({ GetRooms }) => {
   );
 };
 
-export default RoomsComponent;
+export default AdminRooms;
 

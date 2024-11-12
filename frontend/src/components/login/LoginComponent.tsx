@@ -42,9 +42,9 @@ const LoginComponent = ({ login }) => {
           // Handle failed login attempt
           setErrorMessage(response.data.message || 'Unknown error');
         }
-      } catch (error) {
+      } catch (error: any) {
         // Set error message in case of an error (e.g., network issues)
-        setErrorMessage('Invalid email or password');
+        setErrorMessage(error.response.data || 'Unknown error');
         console.error('Login failed:', error);
       }
     }
@@ -102,11 +102,10 @@ const LoginComponent = ({ login }) => {
         </form>
 
         {/* Display error message if login fails */}
-        {errorMessage && (
+        
           <div className="mt-4 text-red-500 text-sm text-center">
             {errorMessage}
           </div>
-        )}
 
         {/* Don't have an account? Sign up NavLink */}
         <div className="mt-4 text-center">

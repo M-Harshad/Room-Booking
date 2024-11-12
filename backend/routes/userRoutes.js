@@ -125,5 +125,32 @@ router.post('/register', async (req, res) => {
   res.json({ AccessToken: newAccessToken, RefreshToken: newRefreshToken });  // Send the new Access Token
 });
 
+router.get("/profile/:userId", async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    // Find the user in the database by userId
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Send user details in response (excluding password for security)
+    const userDetails = {
+      username: user.username,
+      email: user.email,
+      // Add more fields as needed
+    };
+
+    return res.json(userDetails);
+
+  } catch (err) {
+    console.error("Error fetching user details:", err);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+
 
   module.exports = router;

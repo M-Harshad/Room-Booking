@@ -1,15 +1,39 @@
 import { useState, useEffect, useRef } from 'react';
-import { NavLink, } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { Outlet } from 'react-router-dom';
 import { RootState } from '../../redux/store';
 import { useSelector } from 'react-redux';
 import Menuitems from '../common/navbar/MenuItems';
+import { jwtDecode } from 'jwt-decode'; // Import jwt-decode to decode the token
 
 
 const Navbar = () => {
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   const sidebarRef = useRef(null);
-  const IsLoggedIn = useSelector((state) => state.isloggedin.value);
+  const IsLoggedIn = useSelector((state: RootState) => state.isloggedin.value);
+  const [userId, setUserId] = useState<string | null>(null);
+  const [userRole, setUserRole] = useState('user'); // Default role is 'user'
+
+
+
+  useEffect(() => {
+    // Get the userId from localStorage when the component mounts
+    const userIdFromStorage = localStorage.getItem('UserId');
+    if (userIdFromStorage) {
+      setUserId(userIdFromStorage);
+    }
+
+    // Decode the JWT token from localStorage to get the user role
+const token = localStorage.getItem('AccessToken');
+if (token) {
+  try {
+    const decoded: any = jwtDecode(token);
+      setUserRole(decoded.role); // Update state with the decoded role
+  } catch (error) {
+    console.error('Error decoding token:', error);
+  }
+}
+  }, []);
 
   // Toggle the mobile menu
   const toggleMobileMenu = () => {
@@ -24,7 +48,7 @@ const Navbar = () => {
   // Close the menu if clicked outside the sidebar
   useEffect(() => {
     // Function to detect click outside the sidebar
-    const handleClickOutside = (event) => {
+    const handleClickOutside = (event: any) => {
       if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
         closeMobileMenu();
       }
@@ -46,16 +70,20 @@ const Navbar = () => {
         <div className="flex justify-between items-center container mx-auto">
           {/* Logo Section */}
           <div className="text-2xl font-semibold text-dark-white">
-            <NavLink to="/">RoomBooking</NavLink>
+            {userRole === 'admin' ? (
+              <NavLink to="/dashboard">RoomBooking</NavLink>
+            ) : (
+              <NavLink to="/">RoomBooking</NavLink>
+            )}
           </div>
 
           {/* Menu Items */}
           <div className="hidden large:flex space-x-8">
-            <Menuitems />
+          <Menuitems closeMobileMenu={closeMobileMenu} />
 
             {IsLoggedIn ? (
               <NavLink
-                to="/profile"
+                to={`/profile/${userId}`}
                 className="bg-purple-pink-gradient text-white p-2 rounded-xl hover:bg-blue-700"
               >
                 profile
@@ -104,7 +132,11 @@ const Navbar = () => {
           >
             <div className="flex justify-between items-center">
               <div className="text-2xl font-semibold text-dark-white">
-                <NavLink to="/">RoomBooking</NavLink>
+                {userRole === 'admin' ? (
+                  <NavLink to="/dashboard">RoomBooking</NavLink>
+                ) : (
+                  <NavLink to="/">RoomBooking</NavLink>
+                )}
               </div>
               <button
                 className="text-dark-white focus:outline-none"
@@ -129,13 +161,16 @@ const Navbar = () => {
 
             {/* Mobile Menu NavLinks */}
             <div className="space-y-4 flex flex-col relative">
-              <Menuitems />
+              {/* Add onClick to close the menu when a link is clicked */}
+              <Menuitems closeMobileMenu={closeMobileMenu} />
             </div>
+
             <div className="fixed bottom-10">
               {IsLoggedIn ? (
                 <NavLink
-                  to="/profile"
+                  to={`/profile/${userId}`}
                   className="bg-purple-pink-gradient text-white p-2 rounded-xl hover:bg-blue-700"
+                  onClick={closeMobileMenu}  // Close the menu on click
                 >
                   profile
                 </NavLink>
@@ -143,6 +178,7 @@ const Navbar = () => {
                 <NavLink
                   to="/login"
                   className="bg-purple-pink-gradient text-white p-2 rounded-xl hover:bg-blue-700"
+                  onClick={closeMobileMenu}  // Close the menu on click
                 >
                   login
                 </NavLink>

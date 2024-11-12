@@ -11,6 +11,9 @@ import RoomsPage from "./pages/rooms/RoomsPage";
 import ProtectedRoute from "./Protection/ProtectedRoute"
 import { setupAutoRefresh } from "./RefreshToken/RefreshToken";
 import UpdateRoomsPage from "./pages/admin/updateroom/UpdateRoomPage";
+import AdminRoomsPage from "./pages/admin/Rooms/AdminRoomsPage";
+import ProfilePage from "./pages/Profile/ProfilePage";
+import IsLoggedIn from "./Protection/LogIn";
 
 function App() {
 
@@ -24,10 +27,16 @@ function App() {
     } else {
       dispatch(setIsLoggedOut())  // User is not logged in, set Redux state to false
     }
-
+     
     const token = localStorage.getItem("AccessToken");
 
-    setupAutoRefresh(token)
+    if (token) {
+      // If token exists, call the setupAutoRefresh function
+      setupAutoRefresh(token);
+    } else {
+      console.log("AccessToken not found in localStorage");
+    }
+    
   }, [dispatch])
 
 
@@ -44,16 +53,29 @@ function App() {
         element: <RoomsPage/>
       },
       {
-        path: "/admin/addroom",
+        path: "/profile/:userId",
+        element: (<IsLoggedIn>
+                    <ProfilePage/>
+                </IsLoggedIn>)
+      },
+      {
+        path: "/addroom",
        element: (<ProtectedRoute>
                     <AddRoomPage/>
                  </ProtectedRoute>
        ),
       },
       {
-        path: "/admin/rooms/update/:Roomid",
+        path: "rooms/update/:Roomid",
        element: (<ProtectedRoute>
                     <UpdateRoomsPage/>
+                 </ProtectedRoute>
+       ),
+    },
+      {
+        path: "/dashboard",
+       element: (<ProtectedRoute>
+                    <AdminRoomsPage/>
                  </ProtectedRoute>
        ),
     },

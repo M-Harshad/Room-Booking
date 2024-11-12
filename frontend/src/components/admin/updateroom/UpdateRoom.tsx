@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import { useSelector } from "react-redux"; // Assuming you're using Redux for state management
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 
@@ -23,23 +22,23 @@ interface Room {
 const UpdateRoomComponent = () => {
   const [roomDetails, setRoomDetails] = useState<Room | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
   const { Roomid } = useParams(); // Get the room ID from the URL
   const navigate = useNavigate();
-  const token = localStorage.getItem('AccessToken')
+  const token = localStorage.getItem('AccessToken');
 
   // Fetch room details when the component mounts
   useEffect(() => {
     const fetchRoomDetails = async () => {
       try {
-        const response =  await axios.get(`http://localhost:3000/api/rooms/${Roomid}`, {
+        const response = await axios.get(`http://localhost:3000/api/rooms/${Roomid}`, {
           headers: {
-            Authorization:`Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
           },
         });
         setRoomDetails(response.data);
         setIsLoading(false);
-      } catch (err) {
+      } catch (err: any) {
         setError(err.response?.data?.message || 'An error occurred');
         setIsLoading(false);
       }
@@ -47,20 +46,19 @@ const UpdateRoomComponent = () => {
 
     fetchRoomDetails();
   }, [Roomid]);
-  console.log(roomDetails)
 
   // Handle form submission (Update Room)
-  const handleSubmit = async (values) => {
-   
+  const handleSubmit = async (values: Room) => {
+    console.log(values)
     try {
-        await axios.put(`http://localhost:3000/api/rooms/${Roomid}`, values, {
-            headers: {
-              Authorization:`Bearer ${token}`,
-            },
-          });
-          
+      await axios.put(`http://localhost:3000/api/rooms/${Roomid}`, values, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
       navigate('/rooms'); // Redirect to the rooms page after success
-    } catch (err) {
+    } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to update room');
     }
   };
@@ -70,9 +68,10 @@ const UpdateRoomComponent = () => {
   }
 
   return (
-    <div className="bg-dark-background p-6 container mx-auto mt-12 rounded-lg shadow-lg">
+    <div className="w-full min-h-screen bg-dark-background">
+    <div className="bg-dark-background p-6 container mx-auto pt-40 rounded-lg shadow-lg">
       <h2 className="text-3xl text-dark-white mb-6">Update Room</h2>
-      
+
       {/* Display error message */}
       {error && <div className="text-red-500 mb-4">{error}</div>}
 
@@ -87,7 +86,7 @@ const UpdateRoomComponent = () => {
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
-        <Form className="space-y-4">
+        <Form className="">
           {/* Room Name */}
           <div>
             <label className="text-dark-white" htmlFor="roomName">Room Name</label>
@@ -128,11 +127,14 @@ const UpdateRoomComponent = () => {
           <div>
             <label className="text-dark-white" htmlFor="availability">Availability</label>
             <Field
-              type="checkbox"
+              as="select"
               id="availability"
               name="availability"
-              className="bg-dark-background text-dark-white border border-gray-600 p-2 rounded-lg"
-            />
+              className="bg-dark-background text-dark-white border border-gray-600 p-2 rounded-lg w-full"
+            >
+              <option value={true}>Available</option>
+              <option value={false}>Not Available</option>
+            </Field>
             <ErrorMessage name="availability" component="div" className="text-red-500 text-sm" />
           </div>
 
@@ -146,7 +148,9 @@ const UpdateRoomComponent = () => {
         </Form>
       </Formik>
     </div>
+    </div>
   );
 };
 
 export default UpdateRoomComponent;
+
