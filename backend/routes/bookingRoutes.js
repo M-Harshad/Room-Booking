@@ -28,13 +28,43 @@ router.get('/bookings', async (req, res) => {
     }
   });
 
+  // Route to get bookings for a specific user
+router.get('/bookings/:userId', async (req, res) => {
+  try {
+    const { userId } = req.params;  // Get the userId from the URL params
+    
+    
+    // Fetch bookings for the user
+    const bookings = await Booking.find({ userId: userId }).populate('roomId');  // Assuming the room is populated with details
+
+    // If no bookings found for this user, return a 404 response
+    if (bookings.length === 0) {
+      return res.status(404).json({ message: 'No bookings found for this user.' });
+    }
+
+    // Send the bookings data as response
+    res.status(200).json({
+      message: 'User bookings fetched successfully',
+      bookings: bookings,
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: 'Error fetching user bookings',
+      error: error.message,
+    });
+  }
+});
+
 
 // POST route to create a new booking
 router.post('/bookings', async (req, res) => {
-    const { userId, roomId, starttime, endTime } = req.body;
+    const { userId, roomId, startTime, endTime } = req.body;
+    console.log(req.body)
   
     // Validate input
-    if (!userId || !roomId || !starttime || !endTime) {
+    if (!userId || !roomId || !startTime || !endTime) {
       return res.status(400).json({ message: 'All fields (userId, roomId, starttime, endTime) are required.' });
     }
   
@@ -43,7 +73,7 @@ router.post('/bookings', async (req, res) => {
       const newBooking = new Booking({
         userId,
         roomId,
-        starttime,
+        startTime,
         endTime,
       });
   

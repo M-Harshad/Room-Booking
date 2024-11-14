@@ -31,6 +31,8 @@ const LoginComponent = ({ login }) => {
       try {
         // Sending login request to the backend
         const response = await login(values);
+        console.log({response});
+        
         if (response.status === 200 && response.data) {
 
           dispatch(setIsLoggedIn());
@@ -40,7 +42,7 @@ const LoginComponent = ({ login }) => {
           
         } else {
           // Handle failed login attempt
-          setErrorMessage(response.data.message || 'Unknown error');
+          setErrorMessage(response.response.data.message || 'Unknown error');
         }
       } catch (error: any) {
         // Set error message in case of an error (e.g., network issues)

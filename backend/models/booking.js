@@ -7,7 +7,7 @@ const bookingSchema = new mongoose.Schema({
   roomId: {
     type: String,
   },
-  starttime: {
+  startTime: {
     type: Date,
   },
   endTime: {
@@ -15,7 +15,7 @@ const bookingSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    default: 'pending'
+    default: 'completed'
   },
   createdAt: {
     type: Date,

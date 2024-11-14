@@ -13,7 +13,9 @@ import { setupAutoRefresh } from "./RefreshToken/RefreshToken";
 import UpdateRoomsPage from "./pages/admin/updateroom/UpdateRoomPage";
 import AdminRoomsPage from "./pages/admin/Rooms/AdminRoomsPage";
 import ProfilePage from "./pages/Profile/ProfilePage";
-import IsLoggedIn from "./Protection/LogIn";
+import AboutusPage from "./pages/about/AboutusPage";
+import ContactPage from "./pages/contact/ContactPAge";
+import BookingPage from "./pages/Booking/Bookingpage";
 
 function App() {
 
@@ -54,9 +56,23 @@ function App() {
       },
       {
         path: "/profile/:userId",
-        element: (<IsLoggedIn>
-                    <ProfilePage/>
-                </IsLoggedIn>)
+        element: <ProfilePage/>,
+
+      },
+      {
+        path: "/about",
+        element: <AboutusPage/>,
+
+      },
+      {
+        path: "/contact",
+        element: <ContactPage/>,
+
+      },
+      {
+        path: "/booking/:roomId",
+        element: <BookingPage/>,
+
       },
       {
         path: "/addroom",

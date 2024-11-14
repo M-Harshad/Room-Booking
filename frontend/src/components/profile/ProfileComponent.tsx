@@ -1,7 +1,6 @@
-import { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom"; // Import useParams
 import axios from "axios";
-import { setIsLoggedOut } from "../../redux/slice/login/Loginslice";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom"; // Import useParams
 
 const ProfileComponent = () => {
   const { userId } = useParams(); // Get userId from the URL path
@@ -37,13 +36,15 @@ const ProfileComponent = () => {
     localStorage.removeItem("isloggedin");
     localStorage.removeItem("AccessToken");
     // Navigate to the login page (without full page reload)
-    navigate("/");
+    navigate("/login");
   };
   
 
   if (!userDetails) {
-    return <div className="text-center text-black">Loading...</div>;
+    return <div className="text-center text-black bg-dark-background h-screen">Loading...</div>;
   }
+  
+
 
   return (
     <div className="min-h-screen bg-dark-background p-6">

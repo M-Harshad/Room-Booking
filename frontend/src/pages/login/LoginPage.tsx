@@ -4,13 +4,13 @@ import { setupAutoRefresh } from "../../RefreshToken/RefreshToken";
 
 
 // Handle form submission
-const login = async (userinfo: any,) => {
+const login = async (userinfo: any) => {
+  console.log({userinfo})
   try {
     
     const response = await axios.post('http://localhost:3000/api/login', userinfo,);
     console.log(response)
 
-    if (response && response.data) {
       // Store response data in local storage
       localStorage.setItem('AccessToken', response.data.AccessToken);
       localStorage.setItem('RefreshToken', response.data.RefreshToken);
@@ -18,12 +18,10 @@ const login = async (userinfo: any,) => {
       setupAutoRefresh(response.data.AccessToken)
       console.log('Response:', response.data);
       return response
-      
-      
-      
-    }
+    
   } catch (error) {
     console.error('Error:', error);
+    return error
   }
 };
 

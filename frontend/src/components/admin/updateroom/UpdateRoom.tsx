@@ -57,7 +57,7 @@ const UpdateRoomComponent = () => {
         },
       });
 
-      navigate('/rooms'); // Redirect to the rooms page after success
+      navigate('/dashboard'); // Redirect to the rooms page after success
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to update room');
     }

@@ -2,6 +2,7 @@ import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';  // Import jwt-decode to decode the token
 
+
 // Decode the JWT token from localStorage to get the user role
 const token = localStorage.getItem('AccessToken');
 let userRole: string = 'user'; // Default to 'user'

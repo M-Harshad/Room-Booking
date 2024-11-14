@@ -17,7 +17,7 @@ const ProtectedRoute = ({ children }) => {
   }
 
   // If the user has admin role, render the protected children (content), else redirect them to the home page
-  return isAdmin ? children : <Navigate to="/" />;
+  return isAdmin ? children : <Navigate to="/login" />;
 };
 
 export default ProtectedRoute;

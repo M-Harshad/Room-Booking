@@ -35,7 +35,7 @@ const AddRoomComponent = () => {
             Authorization: `Bearer ${localStorage.getItem('AccessToken')}`,
           },
         });
-
+        
         if (response.status === 201) {
              console.log('added')
         }

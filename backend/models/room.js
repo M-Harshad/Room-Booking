@@ -12,6 +12,7 @@ const roomSchema = new mongoose.Schema({
   },
   Availibility: {
     type: Boolean,
+    default: true,
   },
   createdAt: {
     type: Date,

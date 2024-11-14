@@ -97,7 +97,7 @@ router.post('/rooms/add', authenticateToken, async (req, res) => {
 router.put('/rooms/:roomId', authenticateToken, async (req, res) => {
     const { roomId } = req.params; 
     const { roomName, capacity, pricePerHour, availability } = req.body;  // Extract data from the request body
-  
+  console.log({availability})
     // Validate input data
     if (!roomName && !capacity && !pricePerHour && availability === undefined) {
       return res.status(400).json({ message: 'At least one field (roomName, capacity, pricePerHour, availability) must be provided.' });
@@ -114,7 +114,7 @@ router.put('/rooms/:roomId', authenticateToken, async (req, res) => {
       if (roomName) room.roomName = roomName;
       if (capacity) room.capacity = capacity;
       if (pricePerHour) room.pricePerHour = pricePerHour;
-      if (availability !== undefined) room.availability = availability;
+        room.Availibility = availability;
   
 
       await room.save();
