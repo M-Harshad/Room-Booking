@@ -42,7 +42,7 @@ const RoomsComponent = ({ GetRooms }) => {
 
   useEffect(() => {
     GetRooms(dispatch); // Fetch rooms on component mount
-  }, [dispatch]);
+  }, []);
 
   useEffect(() => {
     if (userId) {
@@ -61,28 +61,30 @@ const RoomsComponent = ({ GetRooms }) => {
     navigate(`/booking/${roomId}`);
   };
 
-  // Handle the cancellation of a booking
-  const handleCancel = async (bookingId: string) => {
+  const handleCancel = async (bookingId: string, roomId: string) => {
     try {
       const response = await axios.delete(
-        `http://localhost:3000/api/bookings/${bookingId}`
+        `http://localhost:3000/api/bookings/${bookingId}?roomId=${roomId}`
       );
-
+  
       // If the booking is successfully deleted, update the bookings list
       if (response.status === 200) {
         setUserBookings((prevBookings) =>
           prevBookings.filter((booking) => booking._id !== bookingId)
         );
+  
+        // Re-fetch rooms to get the latest availability status
+        GetRooms(dispatch); // Fetch the rooms again to get the updated availability
       }
     } catch (error) {
       console.error('Error canceling booking:', error);
       console.log('Error canceling booking. Please try again later.');
     }
-
+  
     // Reset the canceling state after cancellation
     setCancelingBooking(null);
   };
-
+  
   // Helper function to format the date/time using date-fns
   const formatTime = (time: string) => {
     const date = new Date(time);
@@ -172,7 +174,7 @@ const RoomsComponent = ({ GetRooms }) => {
                       {cancelingBooking === booking._id ? (
                         <div className="flex space-x-2">
                           <button
-                            onClick={() => handleCancel(booking._id)}
+                            onClick={() => handleCancel(booking._id, booking.roomId)}
                             className="bg-red-500 p-2 rounded-xl text-dark-white focus:outline-none"
                           >
                             Confirm Cancel

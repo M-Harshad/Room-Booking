@@ -64,7 +64,7 @@ const UpdateRoomComponent = () => {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div className="bg-dark-background min-h-screen">Loading...</div>;
   }
 
   return (

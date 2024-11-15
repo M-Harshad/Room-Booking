@@ -26,11 +26,9 @@ interface User {
 }
 
 const AdminBookingsComponent = () => {
-  const navigate = useNavigate();
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [rooms, setRooms] = useState<Room[]>([]);
   const [users, setUsers] = useState<User[]>([]); // To store user data
-  const [cancelingBooking, setCancelingBooking] = useState<string | null>(null); // Track which booking is being canceled
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
@@ -68,20 +66,20 @@ const AdminBookingsComponent = () => {
       });
   }, []);
 
+  // Handle the cancellation of a booking
   const handleCancel = async (bookingId: string, roomId: string) => {
     try {
       const response = await axios.delete(
-        `http://localhost:3000/api/bookings/${bookingId}`,
-        { data: { roomId } } // Sending roomId to the backend
-    );
+        `http://localhost:3000/api/bookings/${bookingId}?roomId=${roomId}`
+      );
 
-  
       // If the booking is successfully deleted, update the bookings list
       if (response.status === 200) {
         setBookings((prevBookings) =>
           prevBookings.filter((booking) => booking._id !== bookingId)
         );
-        setCancelingBooking(null); // Reset the canceling state
+      } else {
+        setErrorMessage('Failed to cancel booking. Please try again.');
       }
     } catch (error) {
       console.error('Error canceling booking:', error);
@@ -155,33 +153,12 @@ const AdminBookingsComponent = () => {
 
                   {/* Admin Cancellation Confirmation */}
                   <div className="flex space-x-4">
-                    {cancelingBooking === booking._id ? (
-                      <div className="flex space-x-2">
-                        <button
-                         onClick={() => {
-                            console.log('Booking ID:', booking._id);
-                            console.log('Room ID:', booking.roomId);
-                            handleCancel(booking._id, booking.roomId);
-                          }}
-                          className="bg-red-500 p-2 rounded-xl text-dark-white focus:outline-none"
-                        >
-                          Confirm Cancel
-                        </button>
-                        <button
-                          onClick={() => setCancelingBooking(null)}
-                          className="bg-gray-500 p-2 rounded-xl text-dark-white focus:outline-none"
-                        >
-                          Cancel
-                        </button>
-                      </div>
-                    ) : (
-                      <button
-                        onClick={() => setCancelingBooking(booking._id)} // Show confirmation
-                        className="bg-red-500 p-2 rounded-xl text-dark-white focus:outline-none"
-                      >
-                        Cancel Booking
-                      </button>
-                    )}
+                    <button
+                      onClick={() => handleCancel(booking._id, booking.roomId)}
+                      className="bg-red-500 p-2 rounded-xl text-dark-white focus:outline-none"
+                    >
+                      Cancel Booking
+                    </button>
                   </div>
                 </li>
               );
@@ -194,3 +171,4 @@ const AdminBookingsComponent = () => {
 };
 
 export default AdminBookingsComponent;
+

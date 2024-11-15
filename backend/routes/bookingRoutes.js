@@ -99,7 +99,7 @@ router.post('/bookings', async (req, res) => {
  // DELETE route to remove a booking by bookingId
 router.delete('/bookings/:bookingId', async (req, res) => {
   const { bookingId } = req.params;  // Get the bookingId from the URL parameter
-  const { roomId } = req.body;       // Get the roomId from the request body
+  const { roomId } = req.query;     // Get the roomId from the request body
   console.log(roomId)
 
   try {
@@ -114,9 +114,9 @@ router.delete('/bookings/:bookingId', async (req, res) => {
     // Find the room by roomId and update its availability to true
     const room = await Room.findById(roomId);
     
-    if (!room) {
-      return res.status(404).json({ message: 'Room not found' });
-    }
+    // if (!room) {
+    //   return res.status(404).json({ message: 'Room not found' });
+    // }
 
     // Set the room availability to true
     room.Availibility = true;
