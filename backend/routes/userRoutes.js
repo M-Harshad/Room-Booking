@@ -5,6 +5,18 @@ const {  generateAccessToken, generateRefreshToken, verifyRefreshToken } = requi
 const jwt = require('jsonwebtoken'); // For generating authentication tokens
 
 
+
+// Get all users (for admin purposes)
+router.get('/users', async (req, res) => {
+  try {
+    const users = await User.find(); // Get all users
+    res.json({ users });
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching users', error });
+  }
+});
+
+
 router.post('/register', async (req, res) => {
     const { username, email, password, role } = req.body;
 

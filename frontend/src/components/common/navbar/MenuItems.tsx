@@ -21,9 +21,11 @@ function Menuitems({closeMobileMenu}) {
 
   // Check if the current route is an admin route (e.g., "/admin" or "/dashboard")
   const isAdminRoute =
-    location.pathname.startsWith('/addroom') || // For adding a room
-    location.pathname === '/dashboard' ||       // For the admin dashboard
-    location.pathname.startsWith('/rooms/update/');  // For update routes like /rooms/update/:Roomid
+  location.pathname.startsWith('/addroom') || // For adding a room
+  location.pathname === '/dashboard' ||       // For the admin dashboard
+  location.pathname.startsWith('/rooms/update/') ||  // For update routes like /rooms/update/:Roomid
+  location.pathname.startsWith('/bookings/') || // Any path under /bookings (e.g., /bookings/:id) should be considered an admin route
+  location.pathname === '/bookings'; // Directly checking /bookings as a valid admin route
 
   // Admin-specific links (only shown if the user is on an admin route)
   const adminLinks = (
@@ -63,6 +65,17 @@ function Menuitems({closeMobileMenu}) {
         }
       >
         Add Rooms
+      </NavLink>
+      <NavLink
+        to="/bookings"
+        onClick={closeMobileMenu}
+        className={({ isActive }) =>
+          isActive
+            ? 'text-[#B515DF] font-bold'
+            : 'text-dark-white hover:text-[#D528A7] font-bold'
+        }
+      >
+        Bookings
       </NavLink>
     </>
   );

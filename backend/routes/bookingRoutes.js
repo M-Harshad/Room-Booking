@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Booking = require("../models/booking");
+const Room = require("../models/room");
 
 
 // GET route to retrieve all rooms
@@ -58,67 +59,83 @@ router.get('/bookings/:userId', async (req, res) => {
 });
 
 
-// POST route to create a new booking
+// Create a booking and update room availability
 router.post('/bookings', async (req, res) => {
-    const { userId, roomId, startTime, endTime } = req.body;
-    console.log(req.body)
-  
-    // Validate input
-    if (!userId || !roomId || !startTime || !endTime) {
-      return res.status(400).json({ message: 'All fields (userId, roomId, starttime, endTime) are required.' });
-    }
-  
-    try {
-      // Create a new booking
-      const newBooking = new Booking({
-        userId,
-        roomId,
-        startTime,
-        endTime,
-      });
-  
+  const { userId, roomId, startTime, endTime } = req.body;
 
-      await newBooking.save();
-  
-      // Return success response with the booking details
-      res.status(201).json({
-        message: 'Booking created successfully',
-        booking: newBooking,
-      });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({
-        message: 'Error creating booking',
-        error: error.message,
-      });
+  try {
+    // Check if the room is available (not booked)
+    const room = await Room.findById(roomId);
+    if (!room) {
+      return res.status(404).json({ message: 'Room not found' });
     }
-  });
 
-   // DELETE route to remove a booking by bookingId
+    if (!room.Availibility) {
+      return res.status(400).json({ message: 'Room is not available' });
+    }
+
+    // Create the booking
+    const newBooking = new Booking({
+      userId,
+      roomId,
+      startTime,
+      endTime,
+      status: 'booked',
+    });
+
+    await newBooking.save();
+
+    // Mark the room as unavailable after booking
+    room.Availibility = false;
+    await room.save();
+
+    res.status(201).json({ message: 'Booking successful', booking: newBooking });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error creating booking', error });
+  }
+});
+
+ // DELETE route to remove a booking by bookingId
 router.delete('/bookings/:bookingId', async (req, res) => {
-    const { bookingId } = req.params;  // Get the bookingId from the URL parameter
-  
-    try {
-      // Find the booking by bookingId and delete it
-      const booking = await Booking.findByIdAndDelete(bookingId);
-  
-      // If the booking is not found, return a 404 error
-      if (!booking) {
-        return res.status(404).json({ message: 'Booking not found' });
-      }
-  
-      // If booking is successfully deleted
-      res.status(200).json({
-        message: 'Booking deleted successfully',
-        booking,
-      });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({
-        message: 'Error deleting booking',
-        error: error.message,
-      });
+  const { bookingId } = req.params;  // Get the bookingId from the URL parameter
+  const { roomId } = req.body;       // Get the roomId from the request body
+  console.log(roomId)
+
+  try {
+    // Find the booking by bookingId and delete it
+    const booking = await Booking.findByIdAndDelete(bookingId);
+
+    // If the booking is not found, return a 404 error
+    if (!booking) {
+      return res.status(404).json({ message: 'Booking not found' });
     }
-  });
+
+    // Find the room by roomId and update its availability to true
+    const room = await Room.findById(roomId);
+    
+    if (!room) {
+      return res.status(404).json({ message: 'Room not found' });
+    }
+
+    // Set the room availability to true
+    room.Availibility = true;
+    await room.save();  // Save the updated room document
+
+    // If booking is successfully deleted and room is updated
+    res.status(200).json({
+      message: 'Booking deleted successfully, room availability updated',
+      booking,
+      room,  // Optionally send the updated room object
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: 'Error deleting booking',
+      error: error.message,
+    });
+  }
+});
+
 
 module.exports = router;

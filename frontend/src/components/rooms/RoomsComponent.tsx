@@ -1,103 +1,113 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { Dispatch } from '@reduxjs/toolkit';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
+import { format } from 'date-fns'; // Importing date-fns format function
+
+interface Booking {
+  _id: string;
+  roomId: string;
+  status: string;
+  startTime: string; // Assuming startTime is an ISO string or similar
+  endTime: string;   // Assuming endTime is an ISO string or similar
+}
+
+interface Room {
+  _id: string;
+  roomName: string;
+  capacity: number;
+  Availibility: boolean;
+  pricePerHour: number;
+}
 
 const RoomsComponent = ({ GetRooms }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const rooms = useSelector((state: RootState) => state.GetRoomsList.rooms);
-  const errorMessage = useSelector((state: RootState) => state.GetRoomsList.errorMessage);
+  const errorMessage = useSelector(
+    (state: RootState) => state.GetRoomsList.errorMessage
+  );
 
-  // User bookings and filter state
-  const [userBookings, setUserBookings] = useState([]);
-  const [filter, setFilter] = useState('all');  // 'all', 'available', or 'your-bookings'
-  const [deleteError, setDeleteError] = useState(''); // State to manage delete error
+  const [filter, setFilter] = useState<'all' | 'available' | 'your-bookings'>(
+    'all'
+  );
+  const [userBookings, setUserBookings] = useState<Booking[]>([]);
+  const [cancelingBooking, setCancelingBooking] = useState<string | null>(null); // Track which booking is being canceled
 
-  // Get userId from localStorage
-  const userId = localStorage.getItem('UserId');  // Assuming userId is stored in localStorage after login
+  const userId = localStorage.getItem('UserId');
   if (!userId) {
-    navigate('/login');  // Redirect to login if no userId is found
+    navigate('/login'); // Redirect to login if no userId is found
   }
 
-  // Fetch rooms data on component mount
   useEffect(() => {
-    GetRooms(dispatch);
+    GetRooms(dispatch); // Fetch rooms on component mount
   }, [dispatch]);
 
-  // Fetch user bookings on component mount
   useEffect(() => {
     if (userId) {
-      axios.get(`http://localhost:3000/api/bookings/${userId}`)
+      axios
+        .get(`http://localhost:3000/api/bookings/${userId}`)
         .then((response) => {
-          setUserBookings(response.data);  // Store user bookings
+          setUserBookings(response.data.bookings); // Set user bookings
         })
         .catch((error) => {
           console.error('Failed to fetch user bookings', error);
         });
     }
   }, [userId]);
-  console.log(userBookings);  // Check the type of userBookings
 
-
-  // Handle room booking (for normal users)
   const handleBookNow = (roomId: string) => {
     navigate(`/booking/${roomId}`);
   };
 
-  // Handle room deletion (only allow deletion of rooms user has booked)
-  const handleDelete = (roomId: string) => {
-    setDeleteError(''); // Clear any previous delete errors
+  // Handle the cancellation of a booking
+  const handleCancel = async (bookingId: string) => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:3000/api/bookings/${bookingId}`
+      );
 
-    // Check if the user has booked this room before allowing deletion
-    const booking = userBookings.find((booking: any) => booking.roomId === roomId);
-    if (!booking) {
-      setDeleteError('You cannot delete this room as it is not in your bookings.');
-      return;
+      // If the booking is successfully deleted, update the bookings list
+      if (response.status === 200) {
+        setUserBookings((prevBookings) =>
+          prevBookings.filter((booking) => booking._id !== bookingId)
+        );
+      }
+    } catch (error) {
+      console.error('Error canceling booking:', error);
+      console.log('Error canceling booking. Please try again later.');
     }
 
-    // Proceed with deletion if the room is in the user's bookings
-    axios.delete(`http://localhost:3000/api/rooms/${roomId}`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('AccessToken')}`,
-      },
-    })
-    .then(() => {
-      console.log(`Room ${roomId} deleted`);
-      // Re-fetch rooms after deletion
-      GetRooms(dispatch);  // Refresh room list after deletion
-    })
-    .catch((error) => {
-      console.error('Failed to delete room:', error);
-      setDeleteError('Failed to delete the room. Please try again.');  // Show delete error
-    });
+    // Reset the canceling state after cancellation
+    setCancelingBooking(null);
   };
 
-  // Convert time to human-readable format
+  // Helper function to format the date/time using date-fns
   const formatTime = (time: string) => {
     const date = new Date(time);
-    return date.toLocaleString();  // Converts to format like "MM/DD/YYYY, HH:MM:SS AM/PM"
+    return format(date, 'MMM dd, yyyy, hh:mm a'); // Format as 'Jan 01, 2024, 10:00 AM'
   };
 
-  // Filter rooms based on selected filter
+  // Filter rooms based on the selected filter
   const filteredRooms = rooms.filter((room) => {
     switch (filter) {
       case 'available':
-        return room.Availibility;  // Only show available rooms
+        return room.Availibility === true; // Only show available rooms
       case 'your-bookings':
-        return userBookings.some((booking: any) => booking.roomId === room._id);  // Show rooms user has booked
+        return userBookings.some((booking) => booking.roomId === room._id); // Show rooms user has booked
       default:
-        return true;  // Show all rooms
+        return true; // Show all rooms
     }
   });
 
   return (
     <div className="min-h-screen flex justify-center items-center bg-dark-background">
       <div className="w-full flex items-center justify-center flex-col p-6 bg-dark-background large:p-20 medium:p-10">
-        <h2 className="text-2xl font-semibold text-center text-dark-white mb-10">List of Rooms</h2>
-        
+        <h2 className="text-2xl font-semibold text-center text-dark-white mb-10">
+          List of Rooms
+        </h2>
+
         {/* Filter Buttons */}
         <div className="mb-6 flex space-x-4">
           <button
@@ -126,8 +136,69 @@ const RoomsComponent = ({ GetRooms }) => {
           </button>
         </div>
 
-        {/* Room list */}
-        {filteredRooms.length > 0 ? (
+        {/* Room List */}
+        {filter === 'your-bookings' ? (
+          <div className="w-full max-w-lg">
+            <h3 className="text-xl font-semibold text-dark-white mb-6">
+              Your Bookings
+            </h3>
+            <ul className="space-y-4">
+              {userBookings.map((booking) => {
+                const room = rooms.find((r) => r._id === booking.roomId);
+                return room ? (
+                  <li
+                    key={room._id}
+                    className="bg-dark-light p-4 rounded-xl flex justify-between items-center"
+                  >
+                    <div>
+                      <h3 className="text-lg font-semibold text-dark-white">
+                        {room.roomName}
+                      </h3>
+                      <p className="text-sm text-dark-white">
+                        Capacity: {room.capacity}
+                      </p>
+                      <p className="text-sm text-dark-white">
+                        Status: {booking.status}
+                      </p>
+                      <p className="text-sm text-dark-white">
+                        Start Time: {formatTime(booking.startTime)}
+                      </p>
+                      <p className="text-sm text-dark-white">
+                        End Time: {formatTime(booking.endTime)}
+                      </p>
+                    </div>
+                    <div className="flex space-x-4">
+                      {/* If this booking is being canceled, show confirmation */}
+                      {cancelingBooking === booking._id ? (
+                        <div className="flex space-x-2">
+                          <button
+                            onClick={() => handleCancel(booking._id)}
+                            className="bg-red-500 p-2 rounded-xl text-dark-white focus:outline-none"
+                          >
+                            Confirm Cancel
+                          </button>
+                          <button
+                            onClick={() => setCancelingBooking(null)}
+                            className="bg-gray-500 p-2 rounded-xl text-dark-white focus:outline-none"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => setCancelingBooking(booking._id)} // Show confirmation
+                          className="bg-red-500 p-2 rounded-xl text-dark-white focus:outline-none"
+                        >
+                          Cancel
+                        </button>
+                      )}
+                    </div>
+                  </li>
+                ) : null;
+              })}
+            </ul>
+          </div>
+        ) : (
           <div className="w-full max-w-lg">
             <ul className="space-y-4">
               {filteredRooms.map((room) => (
@@ -136,28 +207,28 @@ const RoomsComponent = ({ GetRooms }) => {
                   className="bg-dark-light p-4 rounded-xl flex justify-between items-center"
                 >
                   <div>
-                    <h3 className="text-lg font-semibold text-dark-white">{room.roomName}</h3>
-                    <p className="text-sm text-dark-white">Capacity: {room.capacity}</p>
-                    <p className="text-sm text-dark-white">Price: ${room.pricePerHour}/hr</p>
-                    <p className={`text-sm ${room.Availibility ? 'text-green-500' : 'text-red-500'}`}>
+                    <h3 className="text-lg font-semibold text-dark-white">
+                      {room.roomName}
+                    </h3>
+                    <p className="text-sm text-dark-white">
+                      Capacity: {room.capacity}
+                    </p>
+                    <p
+                      className={`text-sm ${
+                        room.Availibility ? 'text-green-500' : 'text-red-500'
+                      }`}
+                    >
                       {room.Availibility ? 'Available' : 'Not Available'}
                     </p>
                   </div>
                   <div className="flex space-x-4">
-                    {/* Show delete button only if this is a room the user has booked */}
-                    {userBookings.some((booking: any) => booking.roomId === room._id) && (
-                      <button
-                        onClick={() => handleDelete(room._id)}
-                        className="bg-red-500 p-2 rounded-xl text-dark-white focus:outline-none"
-                      >
-                        Delete Room
-                      </button>
-                    )}
                     <button
                       onClick={() => handleBookNow(room._id)}
                       disabled={!room.Availibility}
                       className={`${
-                        room.Availibility ? 'bg-purple-pink-gradient' : 'bg-gray-400 cursor-not-allowed'
+                        room.Availibility
+                          ? 'bg-purple-pink-gradient'
+                          : 'bg-gray-400 cursor-not-allowed'
                       } p-2 rounded-xl text-dark-white focus:outline-none`}
                     >
                       Book Now
@@ -167,14 +238,12 @@ const RoomsComponent = ({ GetRooms }) => {
               ))}
             </ul>
           </div>
-        ) : (
-          <p className="text-center text-dark-white">{errorMessage || 'No rooms found.'}</p>
         )}
 
-        {/* Display delete error */}
-        {deleteError && (
+        {/* Show error message */}
+        {errorMessage && (
           <div className="mt-4 text-red-500 text-sm text-center">
-            {deleteError}
+            {errorMessage}
           </div>
         )}
       </div>

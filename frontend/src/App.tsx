@@ -16,6 +16,7 @@ import ProfilePage from "./pages/Profile/ProfilePage";
 import AboutusPage from "./pages/about/AboutusPage";
 import ContactPage from "./pages/contact/ContactPAge";
 import BookingPage from "./pages/Booking/Bookingpage";
+import AdminBookingsPage from "./pages/admin/Bookings/AdminBookingsPage";
 
 function App() {
 
@@ -92,6 +93,13 @@ function App() {
         path: "/dashboard",
        element: (<ProtectedRoute>
                     <AdminRoomsPage/>
+                 </ProtectedRoute>
+       ),
+    },
+      {
+        path: "/bookings",
+       element: (<ProtectedRoute>
+                    <AdminBookingsPage/>
                  </ProtectedRoute>
        ),
     },
