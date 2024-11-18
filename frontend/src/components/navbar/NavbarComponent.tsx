@@ -9,7 +9,7 @@ import { jwtDecode } from 'jwt-decode'; // Import jwt-decode to decode the token
 
 const Navbar = () => {
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const sidebarRef = useRef(null);
+  const sidebarRef = useRef<HTMLDivElement | null>(null)
   const IsLoggedIn = useSelector((state: RootState) => state.isloggedin.value);
   const [userId, setUserId] = useState<string | null>(null);
   const [userRole, setUserRole] = useState('user'); // Default role is 'user'
@@ -49,7 +49,7 @@ if (token) {
   useEffect(() => {
     // Function to detect click outside the sidebar
     const handleClickOutside = (event: any) => {
-      if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
+      if (sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
         closeMobileMenu();
       }
     };

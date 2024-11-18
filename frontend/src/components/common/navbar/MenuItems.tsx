@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { NavLink, useLocation } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';  // Import jwt-decode to decode the token
 
@@ -16,7 +16,11 @@ if (token) {
   }
 }
 
-function Menuitems({closeMobileMenu}) {
+interface MenuItemsProps {
+  closeMobileMenu: () => void; // Type for the closeMobileMenu function
+}
+
+function Menuitems({closeMobileMenu}: MenuItemsProps) {
   const location = useLocation(); // Get the current URL path
 
   // Check if the current route is an admin route (e.g., "/admin" or "/dashboard")

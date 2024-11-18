@@ -13,15 +13,11 @@ interface Booking {
   endTime: string;   // Assuming endTime is an ISO string or similar
 }
 
-interface Room {
-  _id: string;
-  roomName: string;
-  capacity: number;
-  Availibility: boolean;
-  pricePerHour: number;
+interface AdminRoomsProps {
+  GetRooms: (dispatch: any) => void;  // Make sure this is typed correctly
 }
 
-const RoomsComponent = ({ GetRooms }) => {
+const RoomsComponent = ({ GetRooms }: AdminRoomsProps) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const rooms = useSelector((state: RootState) => state.GetRoomsList.rooms);

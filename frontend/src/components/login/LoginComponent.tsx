@@ -6,7 +6,11 @@ import { setIsLoggedIn } from '../../redux/slice/login/Loginslice';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react'; // Import useState
 
-const LoginComponent = ({ login }) => {
+interface LoginComponentProps {
+  login: (username: string, password: string) => void;  // Function signature for the login prop
+}
+
+const LoginComponent = ({ login }: LoginComponentProps) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   

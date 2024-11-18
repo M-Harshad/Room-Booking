@@ -49,7 +49,6 @@ const UpdateRoomComponent = () => {
 
   // Handle form submission (Update Room)
   const handleSubmit = async (values: Room) => {
-    console.log(values)
     try {
       await axios.put(`http://localhost:3000/api/rooms/${Roomid}`, values, {
         headers: {
@@ -79,8 +78,8 @@ const UpdateRoomComponent = () => {
       <Formik
         initialValues={{
           roomName: roomDetails?.roomName || '',
-          capacity: roomDetails?.capacity || '',
-          pricePerHour: roomDetails?.pricePerHour || '',
+          capacity: roomDetails?.capacity || 0,
+          pricePerHour: roomDetails?.pricePerHour || 0,
           availability: roomDetails?.availability || false,
         }}
         validationSchema={validationSchema}

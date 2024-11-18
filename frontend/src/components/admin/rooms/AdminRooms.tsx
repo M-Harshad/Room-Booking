@@ -1,38 +1,36 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { Dispatch } from '@reduxjs/toolkit';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
-import {jwtDecode} from 'jwt-decode';  // Import jwt-decode to decode the token
 
-const AdminRooms = ({ GetRooms }) => {
+
+interface AdminRoomsProps {
+  GetRooms: (dispatch: any) => void;  // Make sure this is typed correctly
+}
+
+const AdminRooms: React.FC<AdminRoomsProps> = ({ GetRooms }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const rooms = useSelector((state: RootState) => state.GetRoomsList.rooms);
   const errorMessage = useSelector((state: RootState) => state.GetRoomsList.errorMessage);
 
-   // Decode the JWT token from localStorage to get the user role
- const token = localStorage.getItem('AccessToken');
- let userRole: string = 'user'; // Default to 'user'
- if (token) {
-   try {
-     const decoded: any = jwtDecode(token);
-     userRole = decoded.role; 
-   } catch (error) {
-     console.error('Error decoding token:', error);
-   }
- }
+  // Decode the JWT token from localStorage to get the user role
+  const token = localStorage.getItem('AccessToken');
 
-
-
-  // Fetch rooms data on component mount
   useEffect(() => {
+    // Fetch rooms data when the component mounts
     GetRooms(dispatch);
-  }, [dispatch]);
-
+  }, [dispatch, GetRooms]);
 
   const handleDelete = async (roomId: string) => {
+    if (!token) {
+      // If no token, prompt user to login (or navigate them to login page)
+      alert('You must be logged in to delete a room.');
+      navigate('/login');
+      return;
+    }
+
     try {
       // Make the DELETE request
       await axios.delete(`http://localhost:3000/api/rooms/${roomId}`, {
@@ -40,16 +38,15 @@ const AdminRooms = ({ GetRooms }) => {
           Authorization: `Bearer ${token}`,
         },
       });
-  
+
       // Optionally, refresh the room list after successful deletion
-      GetRooms(dispatch); // This assumes GetRooms is a function that fetches the room list
-  
+      GetRooms(dispatch);  // Fetch updated room list
+
     } catch (err) {
-      console.error("Failed to delete room:", err);
-      // Optionally, handle the error (e.g., show a notification to the user)
+      console.error('Failed to delete room:', err);
+      alert('Failed to delete room. Please try again.');
     }
   };
-  
 
   // Handle room update (for admins)
   const handleUpdate = (roomId: string) => {
@@ -63,8 +60,7 @@ const AdminRooms = ({ GetRooms }) => {
           List of Rooms
         </h2>
     
-          
-        {/* Room list */}
+        {/* Display rooms list or error message */}
         {rooms.length > 0 ? (
           <div className="w-full max-w-lg">
             <ul className="space-y-4">
@@ -79,33 +75,28 @@ const AdminRooms = ({ GetRooms }) => {
                     <p className="text-sm text-dark-white">Price: ${room.pricePerHour}/hr</p>
                     <p className={`text-sm ${room.Availibility ? 'text-green-500' : 'text-red-500'}`}>
                       {room.Availibility ? 'Available' : 'Not Available'}
-                      {console.log(room)}
                     </p>
                   </div>
                   <div className="flex space-x-4">
-                   
-                      <>
-                        <button
-                          onClick={() => handleUpdate(room._id)}
-                          className="bg-purple-pink-gradient p-2 rounded-xl text-dark-white focus:outline-none"
-                        >
-                          Update
-                        </button>
-                        <button
-                          onClick={() => handleDelete(room._id)}
-                          className="bg-red-500 p-2 rounded-xl text-dark-white focus:outline-none"
-                        >
-                          Delete
-                        </button>
-                      </>
-                    ) 
+                    <button
+                      onClick={() => handleUpdate(room._id)}
+                      className="bg-purple-pink-gradient p-2 rounded-xl text-dark-white focus:outline-none"
+                    >
+                      Update
+                    </button>
+                    <button
+                      onClick={() => handleDelete(room._id)}
+                      className="bg-red-500 p-2 rounded-xl text-dark-white focus:outline-none"
+                    >
+                      Delete
+                    </button>
                   </div>
                 </li>
               ))}
             </ul>
           </div>
         ) : (
-          <p className="text-center text-dark-white">{errorMessage}</p>
+          <p className="text-center text-dark-white">{errorMessage || 'No rooms found'}</p>
         )}
       </div>
     </div>
@@ -113,4 +104,3 @@ const AdminRooms = ({ GetRooms }) => {
 };
 
 export default AdminRooms;
-

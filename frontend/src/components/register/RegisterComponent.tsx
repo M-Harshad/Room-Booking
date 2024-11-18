@@ -6,7 +6,12 @@ import { setIsLoggedIn } from '../../redux/slice/login/Loginslice';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react'; // Import useState for error message state
 
-const RegistrationComponent = ({ register }) => {
+// Define the interface for the form values
+interface RegistrationFormValues {
+  register: (username: string, email: string, password: string) => void
+}
+
+const RegistrationComponent = ({ register }: RegistrationFormValues) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 

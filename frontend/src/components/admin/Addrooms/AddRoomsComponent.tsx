@@ -1,12 +1,10 @@
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const AddRoomComponent = () => {
   const [errorMessage, setErrorMessage] = useState('');
-  const navigate = useNavigate();
 
   const formik = useFormik({
     initialValues: {

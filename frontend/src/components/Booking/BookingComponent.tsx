@@ -39,7 +39,7 @@ const BookingComponent = () => {
           return new Date(value) > new Date(startTime);
         }),
     }),
-    onSubmit: async (values, { resetForm }) => {
+    onSubmit: async (values) => {
 
         const finalValues = {
             userId: userId,

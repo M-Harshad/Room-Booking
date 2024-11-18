@@ -32,7 +32,6 @@ const ContactComponent = () => {
               />
               <textarea 
                 placeholder="Your Message" 
-                rows="4" 
                 className="p-3 w-full bg-dark-light text-dark-white border border-dark-light-border rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500"
               ></textarea>
               <button 
