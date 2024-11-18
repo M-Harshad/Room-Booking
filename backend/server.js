@@ -10,7 +10,7 @@ const PORT = 3000
 
 // CORS setup with credentials allowed
 app.use(cors({
-  origin: 'http://localhost:5173', // The frontend's URL
+  origin: 'https://room-booking-fyg5.onrender.com', // The frontend's URL
   credentials: true, // Allow cookies and other credentials
 }));
 
