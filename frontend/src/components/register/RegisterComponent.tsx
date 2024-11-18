@@ -9,7 +9,7 @@ import { AxiosResponse } from 'axios';
 
 // Define the interface for the form values
 interface RegistrationFormValues {
-  register: (username: string, email: string, password: string) => Promise<AxiosResponse>
+  register: (username: string, email: string, password: string) => Promise<AxiosResponse<any, any>>;
 }
 
 const RegistrationComponent = ({ register }: RegistrationFormValues) => {
