@@ -5,10 +5,11 @@ import { useDispatch } from 'react-redux';
 import { setIsLoggedIn } from '../../redux/slice/login/Loginslice';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react'; // Import useState for error message state
+import { AxiosResponse } from 'axios';
 
 // Define the interface for the form values
 interface RegistrationFormValues {
-  register: (username: string, email: string, password: string) => void
+  register: (username: string, email: string, password: string) => Promise<AxiosResponse>
 }
 
 const RegistrationComponent = ({ register }: RegistrationFormValues) => {
@@ -38,7 +39,7 @@ const RegistrationComponent = ({ register }: RegistrationFormValues) => {
     }),
     onSubmit: async (values, { resetForm }) => {
       try {
-        const response = await register(values);
+        const response = await register(values.username, values.email, values.password);
     
         // Check if AccessToken is returned in the response
         if (response && response.status === 200) {
@@ -48,7 +49,7 @@ const RegistrationComponent = ({ register }: RegistrationFormValues) => {
           navigate("/"); 
         } else {
           // Handle errors if no AccessToken or message exists
-          setErrorMessage(response?.message || 'Unknown error occurred during registration');
+          setErrorMessage(response.data?.message || 'Unknown error occurred during registration');
         }
       } catch (error) {
         console.error('Registration failed:', error); // Log the error for debugging

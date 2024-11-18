@@ -4,7 +4,7 @@ import axios from 'axios';
 let tokenRefreshTimeout: any;
 
 // Function to set up automatic token refresh
-export const setupAutoRefresh = (token) => {
+export const setupAutoRefresh = (token: string) => {
   const { exp } = JSON.parse(atob(token.split('.')[1])); // Decode JWT to get expiration
 
   // Calculate remaining time in milliseconds, subtracting a 5-minute buffer (300,000 ms)

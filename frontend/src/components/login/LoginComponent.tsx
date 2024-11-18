@@ -5,9 +5,10 @@ import { useDispatch } from 'react-redux';
 import { setIsLoggedIn } from '../../redux/slice/login/Loginslice';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react'; // Import useState
+import { AxiosResponse } from 'axios';
 
 interface LoginComponentProps {
-  login: (username: string, password: string) => void;  // Function signature for the login prop
+  login: (username: string, password: string) => Promise<AxiosResponse>;
 }
 
 const LoginComponent = ({ login }: LoginComponentProps) => {
@@ -34,7 +35,7 @@ const LoginComponent = ({ login }: LoginComponentProps) => {
     onSubmit: async (values, { resetForm }) => {
       try {
         // Sending login request to the backend
-        const response = await login(values);
+        const response = await login(values.username, values.password);
         console.log({response});
         
         if (response.status === 200 && response.data) {
@@ -46,7 +47,7 @@ const LoginComponent = ({ login }: LoginComponentProps) => {
           
         } else {
           // Handle failed login attempt
-          setErrorMessage(response.response.data.message || 'Unknown error');
+          setErrorMessage(response.data.message || 'Unknown error');
         }
       } catch (error: any) {
         // Set error message in case of an error (e.g., network issues)

@@ -11,7 +11,7 @@ const AddRoomComponent = () => {
       roomName: '',
       capacity: '',
       pricePerHour: '',
-      availability: true,
+      availability: "true",
     },
     validationSchema: Yup.object({
       roomName: Yup.string()
@@ -23,12 +23,17 @@ const AddRoomComponent = () => {
       pricePerHour: Yup.number()
         .required('Price per hour is required')
         .min(1, 'Price must be greater than 0'),
-      availability: Yup.boolean()
+      availability: Yup.string()
         .required('Availability is required'),
     }),
     onSubmit: async (values, { resetForm }) => {
       try {
-        const response = await axios.post('http://localhost:3000/api/rooms/add', values, {
+        // Convert the availability to a boolean if needed
+        const updatedValues = {
+          ...values,
+          availability: values.availability === 'true' ? true : false, // Convert the availability to boolean
+        };
+        const response = await axios.post('http://localhost:3000/api/rooms/add', updatedValues, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('AccessToken')}`,
           },
@@ -112,8 +117,8 @@ const AddRoomComponent = () => {
                 className="mt-1 p-3 w-full border border-dark-light-border rounded-xl text-dark-white bg-dark-light focus:outline-none focus:border-[#B515DF]"
                 onChange={formik.handleChange}
             >
-               <option value={true}>Available</option>
-               <option value={false}>Not Available</option>
+               <option value='true'>Available</option>
+               <option value='false'>Not Available</option>
             </select>
             {formik.touched.availability && formik.errors.availability && (
                 <p className="text-red-500 text-sm">{formik.errors.availability}</p>

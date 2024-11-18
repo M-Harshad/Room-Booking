@@ -16,7 +16,7 @@ interface Room {
   roomName: string;
   capacity: number;
   pricePerHour: number;
-  availability: boolean;
+  availability: string;
 }
 
 const UpdateRoomComponent = () => {
@@ -50,7 +50,12 @@ const UpdateRoomComponent = () => {
   // Handle form submission (Update Room)
   const handleSubmit = async (values: Room) => {
     try {
-      await axios.put(`http://localhost:3000/api/rooms/${Roomid}`, values, {
+      // Convert the availability to a boolean if needed
+      const updatedValues = {
+        ...values,
+        availability: values.availability === 'true' ? true : false, // Convert the availability to boolean
+      };
+      await axios.put(`http://localhost:3000/api/rooms/${Roomid}`, updatedValues, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -80,7 +85,7 @@ const UpdateRoomComponent = () => {
           roomName: roomDetails?.roomName || '',
           capacity: roomDetails?.capacity || 0,
           pricePerHour: roomDetails?.pricePerHour || 0,
-          availability: roomDetails?.availability || false,
+          availability: roomDetails?.availability || "true",
         }}
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
@@ -131,8 +136,8 @@ const UpdateRoomComponent = () => {
               name="availability"
               className="bg-dark-background text-dark-white border border-gray-600 p-2 rounded-lg w-full"
             >
-              <option value={true}>Available</option>
-              <option value={false}>Not Available</option>
+              <option value="true">Available</option>
+              <option value="false">Not Available</option>
             </Field>
             <ErrorMessage name="availability" component="div" className="text-red-500 text-sm" />
           </div>
