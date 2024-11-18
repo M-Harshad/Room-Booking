@@ -1,25 +1,45 @@
 import RegistrationComponent from "../../components/register/RegisterComponent"
 import axios from "axios";
 import { setupAutoRefresh } from "../../RefreshToken/RefreshToken";
+import { AxiosResponse } from "axios";
 
 
-// Handle form submission
-const register = async (userinfo: any) => {
+const register = async (
+  username: string,
+  email: string,
+  password: string
+): Promise<AxiosResponse<any, any>> => {
   try {
-    const response = await axios.post('http://localhost:3000/api/register', userinfo);
+    const response = await axios.post('http://localhost:3000/api/register', {
+      username,
+      email,
+      password,
+    });
 
     if (response && response.data) {
       // Store response data in local storage
       localStorage.setItem('AccessToken', response.data.AccessToken);
       localStorage.setItem('RefreshToken', response.data.RefreshToken);
       localStorage.setItem('UserId', response.data.userId);
-      setupAutoRefresh(response.data.AccessToken)
+      setupAutoRefresh(response.data.AccessToken);
+
       console.log('Response:', response.data);
-      return response
+      return response; // Ensure returning the correct type here
     }
-  } catch (error) {
+
+    // If no response or data, throw an error (e.g., server not responding as expected)
+    throw new Error('No response or data from the server');
+  } catch (error: any) {
     console.error('Error:', error);
-    return error
+
+    // Return an object with the correct AxiosResponse type in the error case
+    return {
+      data: { message: error.message || 'An error occurred' },
+      status: 500, // A default HTTP status code (500 is Internal Server Error)
+      statusText: 'Internal Server Error',
+      headers: {},
+      config: {},
+    } as AxiosResponse<any, any>; // Cast to AxiosResponse to avoid type mismatch
   }
 };
 
