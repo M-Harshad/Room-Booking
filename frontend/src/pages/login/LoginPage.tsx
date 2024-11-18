@@ -3,9 +3,14 @@ import axios from "axios";
 import { AxiosResponse } from "axios";
 import { setupAutoRefresh } from "../../RefreshToken/RefreshToken";
 
+interface UserInfo {
+  username: string;
+  password: string;
+}
+
 
 // Handle form submission
-const login = async (userinfo: string):  Promise<AxiosResponse<any>> => {
+const login = async (userinfo: UserInfo):  Promise<AxiosResponse<any>> => {
   console.log({userinfo})
   try {
     
