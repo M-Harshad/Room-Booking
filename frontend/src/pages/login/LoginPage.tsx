@@ -3,18 +3,13 @@ import axios from "axios";
 import { AxiosResponse } from "axios";
 import { setupAutoRefresh } from "../../RefreshToken/RefreshToken";
 
-interface UserInfo {
-  username: string;
-  password: string;
-}
 
 
 // Handle form submission
-const login = async (userinfo: UserInfo):  Promise<AxiosResponse<any>> => {
-  console.log({userinfo})
+const login = async (username: string, password: string):  Promise<AxiosResponse<any>> => {
   try {
     
-    const response = await axios.post('https://room-booking-backend-u2rl.onrender.com/api/login', userinfo,);
+    const response = await axios.post('https://room-booking-backend-u2rl.onrender.com/api/login',  { username, password },);
     console.log(response)
 
       // Store response data in local storage
