@@ -33,7 +33,7 @@ const AdminBookingsComponent = () => {
   useEffect(() => {
     // Fetch all bookings for the admin
     axios
-      .get('http://localhost:3000/api/bookings') // Assuming this endpoint returns all bookings
+      .get('https://room-booking-backend-u2rl.onrender.com/api/bookings') // Assuming this endpoint returns all bookings
       .then((response) => {
         setBookings(response.data.rooms); // Correcting the response data structure
       })
@@ -44,7 +44,7 @@ const AdminBookingsComponent = () => {
 
     // Fetch rooms data
     axios
-      .get('http://localhost:3000/api/rooms') // Assuming this endpoint returns all rooms
+      .get('https://room-booking-backend-u2rl.onrender.com/api/rooms') // Assuming this endpoint returns all rooms
       .then((response) => {
         setRooms(response.data.rooms);
       })
@@ -55,7 +55,7 @@ const AdminBookingsComponent = () => {
 
     // Fetch all users (to get their usernames)
     axios
-      .get('http://localhost:3000/api/users') // Assuming there's an endpoint for all users
+      .get('https://room-booking-backend-u2rl.onrender.com/api/users') // Assuming there's an endpoint for all users
       .then((response) => {
         setUsers(response.data.users);
       })
@@ -69,7 +69,7 @@ const AdminBookingsComponent = () => {
   const handleCancel = async (bookingId: string, roomId: string) => {
     try {
       const response = await axios.delete(
-        `http://localhost:3000/api/bookings/${bookingId}?roomId=${roomId}`
+        `https://room-booking-backend-u2rl.onrender.com/api/bookings/${bookingId}?roomId=${roomId}`
       );
 
       // If the booking is successfully deleted, update the bookings list

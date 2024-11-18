@@ -33,7 +33,7 @@ const AddRoomComponent = () => {
           ...values,
           availability: values.availability === 'true' ? true : false, // Convert the availability to boolean
         };
-        const response = await axios.post('http://localhost:3000/api/rooms/add', updatedValues, {
+        const response = await axios.post('https://room-booking-backend-u2rl.onrender.com/api/rooms/add', updatedValues, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('AccessToken')}`,
           },

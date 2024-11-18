@@ -9,7 +9,7 @@ const login = async (userinfo: string):  Promise<AxiosResponse<any>> => {
   console.log({userinfo})
   try {
     
-    const response = await axios.post('http://localhost:3000/api/login', userinfo,);
+    const response = await axios.post('https://room-booking-backend-u2rl.onrender.com/api/login', userinfo,);
     console.log(response)
 
       // Store response data in local storage

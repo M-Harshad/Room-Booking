@@ -31,7 +31,7 @@ const UpdateRoomComponent = () => {
   useEffect(() => {
     const fetchRoomDetails = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/api/rooms/${Roomid}`, {
+        const response = await axios.get(`https://room-booking-backend-u2rl.onrender.com/api/rooms/${Roomid}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -55,7 +55,7 @@ const UpdateRoomComponent = () => {
         ...values,
         availability: values.availability === 'true' ? true : false, // Convert the availability to boolean
       };
-      await axios.put(`http://localhost:3000/api/rooms/${Roomid}`, updatedValues, {
+      await axios.put(`https://room-booking-backend-u2rl.onrender.com/api/rooms/${Roomid}`, updatedValues, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

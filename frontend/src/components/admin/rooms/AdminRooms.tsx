@@ -33,7 +33,7 @@ const AdminRooms: React.FC<AdminRoomsProps> = ({ GetRooms }) => {
 
     try {
       // Make the DELETE request
-      await axios.delete(`http://localhost:3000/api/rooms/${roomId}`, {
+      await axios.delete(`https://room-booking-backend-u2rl.onrender.com/api/rooms/${roomId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

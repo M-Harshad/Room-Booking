@@ -49,7 +49,7 @@ const BookingComponent = () => {
 
          console.log(finalValues)
       try {
-        const response = await axios.post('http://localhost:3000/api/bookings', finalValues,)
+        const response = await axios.post('https://room-booking-backend-u2rl.onrender.com/api/bookings', finalValues,)
 
         if (response.status === 201) {
           console.log('Booking successful');

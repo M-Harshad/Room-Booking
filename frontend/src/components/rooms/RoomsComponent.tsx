@@ -43,7 +43,7 @@ const RoomsComponent = ({ GetRooms }: AdminRoomsProps) => {
   useEffect(() => {
     if (userId) {
       axios
-        .get(`http://localhost:3000/api/bookings/${userId}`)
+        .get(`https://room-booking-backend-u2rl.onrender.com/api/bookings/${userId}`)
         .then((response) => {
           setUserBookings(response.data.bookings); // Set user bookings
         })
@@ -60,7 +60,7 @@ const RoomsComponent = ({ GetRooms }: AdminRoomsProps) => {
   const handleCancel = async (bookingId: string, roomId: string) => {
     try {
       const response = await axios.delete(
-        `http://localhost:3000/api/bookings/${bookingId}?roomId=${roomId}`
+        `https://room-booking-backend-u2rl.onrender.com/api/bookings/${bookingId}?roomId=${roomId}`
       );
   
       // If the booking is successfully deleted, update the bookings list

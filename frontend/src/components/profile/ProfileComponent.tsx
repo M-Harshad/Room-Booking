@@ -17,7 +17,7 @@ const ProfileComponent = () => {
 
     const fetchUserDetails = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/api/profile/${userId}`); // Use userId in the URL
+        const response = await axios.get(`https://room-booking-backend-u2rl.onrender.com/api/profile/${userId}`); // Use userId in the URL
         setUserDetails(response.data);
       } catch (err: any) {
         setError(err.response?.data?.message || "Failed to load user data");

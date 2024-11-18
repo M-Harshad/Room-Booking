@@ -10,7 +10,7 @@ const register = async (
   password: string
 ): Promise<AxiosResponse<any, any>> => {
   try {
-    const response = await axios.post('http://localhost:3000/api/register', {
+    const response = await axios.post('https://room-booking-backend-u2rl.onrender.com/api/register', {
       username,
       email,
       password,

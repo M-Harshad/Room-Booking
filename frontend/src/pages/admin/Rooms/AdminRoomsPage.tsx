@@ -6,7 +6,7 @@ import axios from "axios";
 const getroom = async (dispatch: any) => {
     try {
       // Make the GET request to fetch rooms
-      const response = await axios.get('http://localhost:3000/api/rooms');
+      const response = await axios.get('https://room-booking-backend-u2rl.onrender.com/api/rooms');
   
       if (response && response.data) {
         // Dispatch action to set rooms
