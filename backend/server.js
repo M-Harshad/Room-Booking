@@ -14,10 +14,12 @@ app.use(cors({
   credentials: true, // Allow cookies and other credentials
 }));
 
-app.use(express.static(path.join(__dirname, 'build')));
+// Serve static files from the React app's build directory (adjust the path accordingly)
+app.use(express.static(path.join(__dirname, '..', 'frontend', 'build')));
 
+// Fallback to index.html for routes handled by React Router
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+  res.sendFile(path.join(__dirname, '..', 'frontend', 'build', 'index.html'));
 });
 
 
