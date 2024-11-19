@@ -74,7 +74,6 @@ const RoomsComponent = ({ GetRooms }: AdminRoomsProps) => {
       }
     } catch (error) {
       console.error('Error canceling booking:', error);
-      console.log('Error canceling booking. Please try again later.');
     }
   
     // Reset the canceling state after cancellation

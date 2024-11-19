@@ -9,7 +9,6 @@ export const setupAutoRefresh = (token: string) => {
 
   // Calculate remaining time in milliseconds, subtracting a 5-minute buffer (300,000 ms)
   const refreshTime = exp * 1000 - Date.now() - 30000;
-  console.log(`${refreshTime} this is time`)
 
   // Clear any existing timeout to prevent duplicates
   if (tokenRefreshTimeout) clearTimeout(tokenRefreshTimeout);
@@ -30,7 +29,7 @@ export const refreshToken = async () => {
       }
   
       // Make the POST request to refresh the access token, sending the refresh token in the header
-      const response = await axios.post('http://localhost:3000/api/user/refresh-token', {}, {
+      const response = await axios.post('https://room-booking-backend-u2rl.onrender.com/api/user/refresh-token', {}, {
         withCredentials: true, // Ensure cookies are sent with the request
         headers: {
           Authorization: `Bearer ${refreshToken}`, // Send the refresh token in the Authorization header
@@ -43,7 +42,6 @@ export const refreshToken = async () => {
       localStorage.setItem('AccessToken', newAccessToken);
       localStorage.setItem('RefreshToken', newRefreshToken);
       setupAutoRefresh(newAccessToken);
-      console.log('working...')
   
     } catch (error) {
       console.error("Failed to refresh token:", error);

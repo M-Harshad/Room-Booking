@@ -23,7 +23,6 @@ const register = async (
       localStorage.setItem('UserId', response.data.userId);
       setupAutoRefresh(response.data.AccessToken);
 
-      console.log('Response:', response.data);
       return response; // Ensure returning the correct type here
     }
 

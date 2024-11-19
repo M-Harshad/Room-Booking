@@ -13,10 +13,8 @@ const BookingComponent = () => {
   // Get the userId from localStorage (assuming user is authenticated)
   useEffect(() => {
     const storedUserId = localStorage.getItem('UserId');  // Assuming UserId is stored in localStorage after login
-    console.log(storedUserId)
     if (storedUserId) {
       setUserId(storedUserId);
-      console.log(userId)
     } else {
       // Redirect or handle case when no userId is found
       navigate('/login');  // Redirect to login page if not authenticated
@@ -52,7 +50,6 @@ const BookingComponent = () => {
         const response = await axios.post('https://room-booking-backend-u2rl.onrender.com/api/bookings', finalValues,)
 
         if (response.status === 201) {
-          console.log('Booking successful');
           navigate('/bookings');  // Redirect to the bookings page or confirmation page
         }
       } catch (error) {

@@ -20,7 +20,6 @@ const getroom = async (dispatch: any) => {
     const errorMessage = error?.response?.data?.message || 'An error occurred while fetching rooms.';
     
     // Log the error and dispatch the error message to Redux store
-    console.error('Error fetching rooms:', errorMessage);
     dispatch(setErrorMessage(errorMessage));
   }
 };

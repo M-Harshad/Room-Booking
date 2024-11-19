@@ -40,7 +40,6 @@ const AddRoomComponent = () => {
         });
         
         if (response.status === 201) {
-             console.log('added')
         }
       } catch (error) {
         console.error('Room addition failed:', error);

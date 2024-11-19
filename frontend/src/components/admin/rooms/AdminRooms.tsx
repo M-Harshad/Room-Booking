@@ -44,7 +44,6 @@ const AdminRooms: React.FC<AdminRoomsProps> = ({ GetRooms }) => {
 
     } catch (err) {
       console.error('Failed to delete room:', err);
-      alert('Failed to delete room. Please try again.');
     }
   };
 

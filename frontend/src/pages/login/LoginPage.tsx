@@ -17,7 +17,6 @@ const login = async (username: string, password: string):  Promise<AxiosResponse
       localStorage.setItem('RefreshToken', response.data.RefreshToken);
       localStorage.setItem('UserId', response.data.userId);
       setupAutoRefresh(response.data.AccessToken)
-      console.log('Response:', response.data);
       return response
     
   } catch (error: any) {
