@@ -1,7 +1,7 @@
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useState } from 'react';
-import axios from 'axios';
+import APIClientPrivate from '../../../utli/axios';
 
 const AddRoomComponent = () => {
   const [errorMessage, setErrorMessage] = useState('');
@@ -33,11 +33,7 @@ const AddRoomComponent = () => {
           ...values,
           availability: values.availability === 'true' ? true : false, // Convert the availability to boolean
         };
-        const response = await axios.post('https://room-booking-backend-u2rl.onrender.com/api/rooms/add', updatedValues, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('AccessToken')}`,
-          },
-        });
+        const response = await APIClientPrivate.post(`/rooms/add`, updatedValues)
         
         if (response.status === 201) {
         }

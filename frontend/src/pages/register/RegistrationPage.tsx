@@ -1,5 +1,5 @@
 import RegistrationComponent from "../../components/register/RegisterComponent"
-import axios from "axios";
+import { APIClient } from "../../utli/axios";
 import { setupAutoRefresh } from "../../RefreshToken/RefreshToken";
 import { AxiosResponse } from "axios";
 
@@ -10,7 +10,7 @@ const register = async (
   password: string
 ): Promise<AxiosResponse<any, any>> => {
   try {
-    const response = await axios.post('https://room-booking-backend-u2rl.onrender.com/api/register', {
+    const response = await APIClient.post('/register', {
       username,
       email,
       password,

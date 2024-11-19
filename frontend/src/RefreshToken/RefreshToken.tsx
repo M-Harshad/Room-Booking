@@ -1,5 +1,5 @@
-// authService.js
-import axios from 'axios';
+import APIClientPrivate from "../utli/axios";
+
 
 let tokenRefreshTimeout: any;
 
@@ -29,12 +29,7 @@ export const refreshToken = async () => {
       }
   
       // Make the POST request to refresh the access token, sending the refresh token in the header
-      const response = await axios.post('https://room-booking-backend-u2rl.onrender.com/api/user/refresh-token', {}, {
-        withCredentials: true, // Ensure cookies are sent with the request
-        headers: {
-          Authorization: `Bearer ${refreshToken}`, // Send the refresh token in the Authorization header
-        },
-      });
+      const response = await APIClientPrivate.post("user/refresh-token")
   
       const newAccessToken = response.data.AccessToken;
       const newRefreshToken = response.data.RefreshToken;

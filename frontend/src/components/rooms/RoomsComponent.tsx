@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { format } from 'date-fns'; // Importing date-fns format function
+import { APIClient } from '../../utli/axios';
 
 interface Booking {
   _id: string;
@@ -42,8 +42,7 @@ const RoomsComponent = ({ GetRooms }: AdminRoomsProps) => {
 
   useEffect(() => {
     if (userId) {
-      axios
-        .get(`https://room-booking-backend-u2rl.onrender.com/api/bookings/${userId}`)
+       APIClient.get(`/bookings/${userId}`)
         .then((response) => {
           setUserBookings(response.data.bookings); // Set user bookings
         })
@@ -59,9 +58,7 @@ const RoomsComponent = ({ GetRooms }: AdminRoomsProps) => {
 
   const handleCancel = async (bookingId: string, roomId: string) => {
     try {
-      const response = await axios.delete(
-        `https://room-booking-backend-u2rl.onrender.com/api/bookings/${bookingId}?roomId=${roomId}`
-      );
+      const response = await APIClient.delete(`/bookings/${bookingId}?roomId=${roomId}`);
   
       // If the booking is successfully deleted, update the bookings list
       if (response.status === 200) {

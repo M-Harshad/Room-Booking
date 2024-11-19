@@ -2,7 +2,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import axios from 'axios';
+import { APIClient } from '../../utli/axios';
 
 const BookingComponent = () => {
   const [errorMessage, setErrorMessage] = useState('');
@@ -44,10 +44,8 @@ const BookingComponent = () => {
             roomId: roomId,
             ...values,
           };
-
-         console.log(finalValues)
       try {
-        const response = await axios.post('https://room-booking-backend-u2rl.onrender.com/api/bookings', finalValues,)
+        const response = await APIClient.post('/bookings', finalValues,)
 
         if (response.status === 201) {
           navigate('/bookings');  // Redirect to the bookings page or confirmation page

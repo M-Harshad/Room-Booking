@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import APIClientPrivate from "../../../utli/axios";
 
 // Yup validation schema
 const validationSchema = Yup.object({
@@ -25,17 +25,13 @@ const UpdateRoomComponent = () => {
   const [error, setError] = useState<string | null>(null);
   const { Roomid } = useParams(); // Get the room ID from the URL
   const navigate = useNavigate();
-  const token = localStorage.getItem('AccessToken');
+
 
   // Fetch room details when the component mounts
   useEffect(() => {
     const fetchRoomDetails = async () => {
       try {
-        const response = await axios.get(`https://room-booking-backend-u2rl.onrender.com/api/rooms/${Roomid}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await APIClientPrivate.get(`/rooms/${Roomid}`)
         setRoomDetails(response.data);
         setIsLoading(false);
       } catch (err: any) {
@@ -55,12 +51,7 @@ const UpdateRoomComponent = () => {
         ...values,
         availability: values.availability === 'true' ? true : false, // Convert the availability to boolean
       };
-      await axios.put(`https://room-booking-backend-u2rl.onrender.com/api/rooms/${Roomid}`, updatedValues, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
+      await APIClientPrivate.put(`/rooms/${Roomid}`, updatedValues)
       navigate('/dashboard'); // Redirect to the rooms page after success
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to update room');

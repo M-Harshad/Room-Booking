@@ -1,12 +1,12 @@
 import AdminRooms from "../../../components/admin/rooms/AdminRooms"
 import { setRooms, setErrorMessage } from "../../../redux/slice/rooms/RoomSlice";
-import axios from "axios";
+import { APIClient } from "../../../utli/axios";
 
 
 const getroom = async (dispatch: any) => {
     try {
       // Make the GET request to fetch rooms
-      const response = await axios.get('https://room-booking-backend-u2rl.onrender.com/api/rooms');
+      const response = await APIClient.get('/rooms');
   
       if (response && response.data) {
         // Dispatch action to set rooms

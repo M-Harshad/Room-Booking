@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
+import APIClientPrivate from '../../../utli/axios';
 
 
 interface AdminRoomsProps {
@@ -33,11 +33,7 @@ const AdminRooms: React.FC<AdminRoomsProps> = ({ GetRooms }) => {
 
     try {
       // Make the DELETE request
-      await axios.delete(`https://room-booking-backend-u2rl.onrender.com/api/rooms/${roomId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      await APIClientPrivate.delete(`/rooms/${roomId}`)
 
       // Optionally, refresh the room list after successful deletion
       GetRooms(dispatch);  // Fetch updated room list

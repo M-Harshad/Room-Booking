@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import { format } from 'date-fns'; // Importing date-fns format function
+import { APIClient } from '../../../utli/axios';
 
 interface Booking {
   _id: string;
@@ -32,8 +32,7 @@ const AdminBookingsComponent = () => {
 
   useEffect(() => {
     // Fetch all bookings for the admin
-    axios
-      .get('https://room-booking-backend-u2rl.onrender.com/api/bookings') // Assuming this endpoint returns all bookings
+    APIClient.get('/bookings')
       .then((response) => {
         setBookings(response.data.rooms); // Correcting the response data structure
       })
@@ -43,8 +42,7 @@ const AdminBookingsComponent = () => {
       });
 
     // Fetch rooms data
-    axios
-      .get('https://room-booking-backend-u2rl.onrender.com/api/rooms') // Assuming this endpoint returns all rooms
+      APIClient.get('/rooms')// Assuming this endpoint returns all rooms
       .then((response) => {
         setRooms(response.data.rooms);
       })
@@ -54,8 +52,7 @@ const AdminBookingsComponent = () => {
       });
 
     // Fetch all users (to get their usernames)
-    axios
-      .get('https://room-booking-backend-u2rl.onrender.com/api/users') // Assuming there's an endpoint for all users
+      APIClient.get('/users') // Assuming there's an endpoint for all users
       .then((response) => {
         setUsers(response.data.users);
       })
@@ -68,9 +65,7 @@ const AdminBookingsComponent = () => {
   // Handle the cancellation of a booking
   const handleCancel = async (bookingId: string, roomId: string) => {
     try {
-      const response = await axios.delete(
-        `https://room-booking-backend-u2rl.onrender.com/api/bookings/${bookingId}?roomId=${roomId}`
-      );
+      const response = await APIClient.delete(`/bookings/${bookingId}?roomId=${roomId}`);
 
       // If the booking is successfully deleted, update the bookings list
       if (response.status === 200) {

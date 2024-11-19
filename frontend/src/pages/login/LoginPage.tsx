@@ -1,5 +1,5 @@
 import LoginComponent from "../../components/login/LoginComponent"
-import axios from "axios";
+import { APIClient } from "../../utli/axios";
 import { AxiosResponse } from "axios";
 import { setupAutoRefresh } from "../../RefreshToken/RefreshToken";
 
@@ -9,9 +9,8 @@ import { setupAutoRefresh } from "../../RefreshToken/RefreshToken";
 const login = async (username: string, password: string):  Promise<AxiosResponse<any>> => {
   try {
     
-    const response = await axios.post('https://room-booking-backend-u2rl.onrender.com/api/login',  { username, password },);
+    const response = await APIClient.post('/login', { username, password },);
     console.log(response)
-
       // Store response data in local storage
       localStorage.setItem('AccessToken', response.data.AccessToken);
       localStorage.setItem('RefreshToken', response.data.RefreshToken);

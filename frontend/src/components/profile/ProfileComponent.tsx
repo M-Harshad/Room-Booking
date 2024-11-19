@@ -1,6 +1,6 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom"; // Import useParams
+import { APIClient } from "../../utli/axios";
 
 const ProfileComponent = () => {
   const { userId } = useParams(); // Get userId from the URL path
@@ -17,7 +17,7 @@ const ProfileComponent = () => {
 
     const fetchUserDetails = async () => {
       try {
-        const response = await axios.get(`https://room-booking-backend-u2rl.onrender.com/api/profile/${userId}`); // Use userId in the URL
+        const response = await APIClient.get(`/profile/${userId}`);// Use userId in the URL
         setUserDetails(response.data);
       } catch (err: any) {
         setError(err.response?.data?.message || "Failed to load user data");
