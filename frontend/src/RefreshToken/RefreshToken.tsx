@@ -1,4 +1,4 @@
-import APIClientPrivate from "../utli/axios";
+import { APIClient } from "../utli/axios";
 
 
 let tokenRefreshTimeout: any;
@@ -29,7 +29,7 @@ export const refreshToken = async () => {
       }
   
       // Make the POST request to refresh the access token, sending the refresh token in the header
-      const response = await APIClientPrivate.post("user/refresh-token")
+      const response = await APIClient.post("user/refresh-token")
   
       const newAccessToken = response.data.AccessToken;
       const newRefreshToken = response.data.RefreshToken;
