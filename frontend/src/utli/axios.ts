@@ -5,7 +5,7 @@ import axios from "axios";
 
 const token = localStorage.getItem('AccessToken');
 // const API_URL = "http://192.168.1.27:3010/api"
-const API_URL = "http://localhost:3000/api"
+const API_URL = "https://room-booking-3ay8.onrender.com/api"
 
 const APIClientPrivate = axios.create({
   baseURL: API_URL,
